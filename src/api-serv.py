@@ -82,6 +82,11 @@ def ClientJobsAbort():
 
 #TODO Finish prototyping server API endpoints
 #TODO Add requirements for server API endpoints
+"""
+NOTE: The following API endpoints will expect JSON.
+If it is referencing a host on a team, it will need
+to send a JSON object specifying those parameters
+"""
 @app.route('/web-gui/session/open')
 def WebGuiSessionOpen():
     pass
