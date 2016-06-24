@@ -22,8 +22,8 @@ def ClientSessionOpen():
 @app.route('/client/session/close')
 def ClientSessionClose():
     """
-    Requires an active session
-    Requires a valid session cookie
+    Requires an active client session
+    Requires a valid client session cookie
     This will deactivate the session for that client
     """
     pass
@@ -32,8 +32,8 @@ def ClientSessionClose():
 def ClientSessionUpdate():
     #TODO Will the client supply other data as well
     """
-    Requires an active session
-    Requires a valid session cookie
+    Requires an active client session
+    Requires a valid client session cookie
     The scoring bot will provide the number of available subprocesses
         available for checks
     The scoring bot will provide the maximum number of checks it supports
@@ -43,8 +43,8 @@ def ClientSessionUpdate():
 @app.route('/client/jobs/list')
 def ClientJobsList():
     """
-    Requires an active session
-    Requires a valid session cookie
+    Requires an active client session
+    Requires a valid client session cookie
     Lists all of the checks that are queued
     """
     pass
@@ -52,8 +52,8 @@ def ClientJobsList():
 @app.route('/client/jobs/check-in')
 def ClientJobsCheckin():
     """
-    Requires an active session
-    Requires a valid session cookie
+    Requires an active client session
+    Requires a valid client session cookie
     Client will send the status of each currently active job
     Client will send the status of all recently completed job
     """
@@ -62,8 +62,8 @@ def ClientJobsCheckin():
 @app.route('/client/jobs/request')
 def ClientJobsRequest():
     """
-    Requires an active session
-    Requires a valid session cookie
+    Requires an active client session
+    Requires a valid client session cookie
     Client requests one job to take on
     Server responds with a job for the client to execute
     Server places that job into an "Active" list
@@ -73,9 +73,75 @@ def ClientJobsRequest():
 @app.route('/client/jobs/abort')
 def ClientJobsAbort():
     """
-    Requires an active session
-    Requires a valid session cookie
+    Requires an active client session
+    Requires a valid client session cookie
     Client notifies the server that the job has been aborted
     Server places that job back into the available pool
     """
+    pass
+
+#TODO Finish prototyping server API endpoints
+#TODO Add requirements for server API endpoints
+@app.route('/web-gui/session/open')
+def WebGuiSessionOpen():
+    pass
+
+@app.route('/web-gui/session/close')
+def WebGuiSessionClose():
+    pass
+
+@app.route('/web-gui/team/list')
+def WebGuiTeamList():
+    pass
+
+@app.route('/web-gui/team/create')
+def WebGuiTeamCreate():
+    pass
+
+@app.route('/web-gui/team/delete')
+def WebGuiTeamDelete():
+    pass
+
+@app.route('/web-gui/host/list')
+def WebGuiHostList():
+    pass
+
+@app.route('/web-gui/host/create')
+def WebGuiHostCreate():
+    pass
+
+@app.route('/web-gui/host/delete')
+def WebGuiHostDelete():
+    pass
+
+@app.route('/web-gui/service/list')
+def WebGuisServiceList():
+    pass
+
+@app.route('/web-gui/service/create')
+def WebGuiServiceCreate():
+    pass
+
+@app.route('/web-gui/service/delete')
+def WebGuiServiceDelete():
+    pass
+
+@app.route('/web-gui/check/enable')
+def WebGuiCheckEnable():
+    pass
+
+@app.route('/web-gui/check/disable')
+def WebGuiCheckDisable():
+    pass
+
+@app.route('/web-gui/check/interval/list')
+def WebGuiCheckIntervalList():
+    pass
+
+@app.route('/web-gui/check/interval/set')
+def WebGuiCheckIntervalSet():
+    pass
+
+@app.route('/web-gui/check/interval/default')
+def WebGuiCheckIntervalDefault():
     pass
