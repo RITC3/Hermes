@@ -1,45 +1,37 @@
-from flask import Flask, jsonify
+from flask import Blueprint, jsonify
 
-#TODO Implement TLS
+api = Blueprint('api', __name__, '/api')
 
-app = Flask(__name__)
-app.run()
-
-@app.errorhandler(404)
-def page_not_found(error):
-    """Return generic 404 page"""
-    return 'Requested page does not exist', 404
-
-@app.route('/')
+@api.route('/')
 def welcome():
     return 'Welcome to the Hermes Scoring server'
 
 #Bot API endpoint list
-@app.route('/bot/session/open')
+@api.route('/bot/session/open')
 def FlaskBotSessionOpen():
     endpoints.BotSessionOpen()
 
-@app.route('/bot/session/close')
+@api.route('/bot/session/close')
 def FlaskBotSessionClose():
     endpoints.BotSessionClose()
 
-@app.route('/bot/session/update')
+@api.route('/bot/session/update')
 def FlaskBotSessionUpdate():
     endpoints.BotSessionUpdate()
 
-@app.route('/bot/jobs/list')
+@api.route('/bot/jobs/list')
 def FlaskBotJobsList():
     endpoints.BotJobsList()
 
-@app.route('/bot/jobs/check-in')
+@api.route('/bot/jobs/check-in')
 def FlaskBotJobsCheckin():
     endpoints.BotJobsCheckin()
 
-@app.route('/bot/jobs/request')
+@api.route('/bot/jobs/request')
 def FlaskBotJobsRequest():
     endpoints.BotJobsRequest()
 
-@app.route('/bot/jobs/abort')
+@api.route('/bot/jobs/abort')
 def FlaskBotJobsAbort():
     endpoints.BotJobsAbort()
 
@@ -50,66 +42,66 @@ NOTE: The following API endpoints will expect JSON.
 If it is referencing a host on a team, it will need
 to send a JSON object specifying those parameters
 """
-@app.route('/web-gui/session/open')
+@api.route('/web-gui/session/open')
 def FlaskWebServerSessionOpen():
     endpoints.WebServerSessionOpen()
 
-@app.route('/web-gui/session/close')
+@api.route('/web-gui/session/close')
 def FlaskWebServerSessionClose():
     endpoints.WebServerSessionClose()
 
-@app.route('/web-gui/team/list')
+@api.route('/web-gui/team/list')
 def FlaskWebServerTeamList():
     endpoints.WebServerTeamList()
 
-@app.route('/web-gui/team/create')
+@api.route('/web-gui/team/create')
 def FlaskWebServerTeamCreate():
     endpoints.WebServerTeamCreate()
 
-@app.route('/web-gui/team/delete')
+@api.route('/web-gui/team/delete')
 def FlaskWebServerTeamDelete():
     endpoints.WebServerTeamDelete()
 
-@app.route('/web-gui/host/list')
+@api.route('/web-gui/host/list')
 def FlaskWebServerHostList():
     endpoints.WebServerHostList()
 
-@app.route('/web-gui/host/create')
+@api.route('/web-gui/host/create')
 def FlaskWebServerHostCreate():
     endpoints.WebServerTeamCreate()
 
-@app.route('/web-gui/host/delete')
+@api.route('/web-gui/host/delete')
 def FlaskWebServerHostDelete():
     endpoints.WebServerHostDelete()
 
-@app.route('/web-gui/service/list')
+@api.route('/web-gui/service/list')
 def FlaskWebServersServiceList():
     endpoints.WebServersServiceList()
 
-@app.route('/web-gui/service/create')
+@api.route('/web-gui/service/create')
 def FlaskWebServerServiceCreate():
     endpoints.WebServerServiceCreate()
 
-@app.route('/web-gui/service/delete')
+@api.route('/web-gui/service/delete')
 def FlaskWebServerServiceDelete():
     endpoints.WebServerServiceDelete()
 
-@app.route('/web-gui/check/enable')
+@api.route('/web-gui/check/enable')
 def FlaskWebServerCheckEnable():
     endpoints.FlaskWebServerCheckEnable()
 
-@app.route('/web-gui/check/disable')
+@api.route('/web-gui/check/disable')
 def FlaskWebServerCheckDisable():
     endpoints.WebServerCheckDisable()
 
-@app.route('/web-gui/check/interval/list')
+@api.route('/web-gui/check/interval/list')
 def FlaskWebServerCheckIntervalList():
     endpoints.WebServerCheckIntervalList()
 
-@app.route('/web-gui/check/interval/set')
+@api.route('/web-gui/check/interval/set')
 def FlaskWebServerCheckIntervalSet():
     endpoints.WebServerCheckIntervalSet()
 
-@app.route('/web-gui/check/interval/default')
+@api.route('/web-gui/check/interval/default')
 def FlaskWebServerCheckIntervalDefault():
     endpoints.WebServerCheckIntervalDefault()
