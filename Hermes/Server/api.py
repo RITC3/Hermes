@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint
+from . import endpoints
 
-api = Blueprint('api', __name__, '/api')
+api = Blueprint('api', __name__, url_prefix='/api')
 
 @api.route('/')
 def welcome():
@@ -9,31 +10,31 @@ def welcome():
 #Bot API endpoint list
 @api.route('/bot/session/open')
 def FlaskBotSessionOpen():
-    endpoints.BotSessionOpen()
+    return endpoints.BotSessionOpen()
 
 @api.route('/bot/session/close')
 def FlaskBotSessionClose():
-    endpoints.BotSessionClose()
+    return endpoints.BotSessionClose()
 
 @api.route('/bot/session/update')
 def FlaskBotSessionUpdate():
-    endpoints.BotSessionUpdate()
+    return endpoints.BotSessionUpdate()
 
 @api.route('/bot/jobs/list')
 def FlaskBotJobsList():
-    endpoints.BotJobsList()
+    return endpoints.BotJobsList()
 
 @api.route('/bot/jobs/check-in')
 def FlaskBotJobsCheckin():
-    endpoints.BotJobsCheckin()
+    return endpoints.BotJobsCheckin()
 
 @api.route('/bot/jobs/request')
 def FlaskBotJobsRequest():
-    endpoints.BotJobsRequest()
+    return endpoints.BotJobsRequest()
 
 @api.route('/bot/jobs/abort')
 def FlaskBotJobsAbort():
-    endpoints.BotJobsAbort()
+    return endpoints.BotJobsAbort()
 
 #TODO Finish prototyping server API endpoints
 #TODO Add requirements for server API endpoints
@@ -44,64 +45,64 @@ to send a JSON object specifying those parameters
 """
 @api.route('/web-gui/session/open')
 def FlaskWebServerSessionOpen():
-    endpoints.WebServerSessionOpen()
+    return endpoints.WebServerSessionOpen()
 
 @api.route('/web-gui/session/close')
 def FlaskWebServerSessionClose():
-    endpoints.WebServerSessionClose()
+    return endpoints.WebServerSessionClose()
 
 @api.route('/web-gui/team/list')
 def FlaskWebServerTeamList():
-    endpoints.WebServerTeamList()
+    return endpoints.WebServerTeamList()
 
 @api.route('/web-gui/team/create')
 def FlaskWebServerTeamCreate():
-    endpoints.WebServerTeamCreate()
+    return endpoints.WebServerTeamCreate()
 
 @api.route('/web-gui/team/delete')
 def FlaskWebServerTeamDelete():
-    endpoints.WebServerTeamDelete()
+    return endpoints.WebServerTeamDelete()
 
 @api.route('/web-gui/host/list')
 def FlaskWebServerHostList():
-    endpoints.WebServerHostList()
+    return endpoints.WebServerHostList()
 
 @api.route('/web-gui/host/create')
 def FlaskWebServerHostCreate():
-    endpoints.WebServerTeamCreate()
+    return endpoints.WebServerTeamCreate()
 
 @api.route('/web-gui/host/delete')
 def FlaskWebServerHostDelete():
-    endpoints.WebServerHostDelete()
+    return endpoints.WebServerHostDelete()
 
 @api.route('/web-gui/service/list')
 def FlaskWebServersServiceList():
-    endpoints.WebServersServiceList()
+    return endpoints.WebServersServiceList()
 
 @api.route('/web-gui/service/create')
 def FlaskWebServerServiceCreate():
-    endpoints.WebServerServiceCreate()
+    return endpoints.WebServerServiceCreate()
 
 @api.route('/web-gui/service/delete')
 def FlaskWebServerServiceDelete():
-    endpoints.WebServerServiceDelete()
+    return endpoints.WebServerServiceDelete()
 
 @api.route('/web-gui/check/enable')
 def FlaskWebServerCheckEnable():
-    endpoints.FlaskWebServerCheckEnable()
+    return endpoints.FlaskWebServerCheckEnable()
 
 @api.route('/web-gui/check/disable')
 def FlaskWebServerCheckDisable():
-    endpoints.WebServerCheckDisable()
+    return endpoints.WebServerCheckDisable()
 
 @api.route('/web-gui/check/interval/list')
 def FlaskWebServerCheckIntervalList():
-    endpoints.WebServerCheckIntervalList()
+    return endpoints.WebServerCheckIntervalList()
 
 @api.route('/web-gui/check/interval/set')
 def FlaskWebServerCheckIntervalSet():
-    endpoints.WebServerCheckIntervalSet()
+    return endpoints.WebServerCheckIntervalSet()
 
 @api.route('/web-gui/check/interval/default')
 def FlaskWebServerCheckIntervalDefault():
-    endpoints.WebServerCheckIntervalDefault()
+    return endpoints.WebServerCheckIntervalDefault()
