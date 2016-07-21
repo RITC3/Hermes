@@ -8,7 +8,9 @@ import random
 """
 Current thoughts for authentication and authorization
 There is a shared secret that is generated on the server at initial runtime
-The first step that a bot must take to authenticate with the server is to provide that shared secret
+The first step that a bot must take to authenticate with the server is to provide that shared secret encrypted with itself
+    This ensures that the secret cannot be sniffed from the network
+    When decrypted, it will be the shared secret
 The server responds with a BotID and an API key (using the session module in Flask)
 The bot will then send with each POST to the server the following two things in addition to other requirements for the endpoint
     The BotID being used
@@ -36,6 +38,11 @@ print "Connection Key:", api.secret_key
 #seed a random number generator with our newly generated secret key
 random.seed(api.secret_key)
 
+#TODO Create a decorator to require the API Key
+
+
+
+
 @api.route('/', methods=['GET','POST'])
 def welcome():
     return 'Welcome to the Hermes Scoring server'
@@ -44,15 +51,25 @@ def welcome():
 @api.route('/bot/session/open', methods=['POST'])
 def FlaskBotSessionOpen():
     #Get the key from the json blob
+    key = request.json.get('key')
+    #TODO Decrypt the key with api.secret_key (AES 256)
     #If they have the key
-        #Do the rest to authenticate them
+    if key == api.secret_key:
+        #TODO Create a BotID and an API key and store it in a session object
+        #If duplicate, try again
+        while True:
+            botID = random.randint(1000)
+            #If we found a unique botID then use that one
+            if botID not in session:
+                session[botID]
+                break
+        
+        botApiKey = str(base64.b64encode(os.urandom(32)))
+        session[botID] = botApiKey
     #if they don't have the key
         #return a 401 Unauthorized
-    key = request.json.get('key')
-    if key == api.secret_key:
-        #Generate a unique ID for them
-        #Get a session cookie for them
-
+        #TODO Return the botID and the API Key encrypted with the shared secret
+        #Do this as a JSON object that has an encrypted (AES 256) JSON blob in it with the ID and Key
         return "success"
     else:
         abort(401) #Unauthorized
