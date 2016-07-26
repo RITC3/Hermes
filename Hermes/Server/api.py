@@ -3,6 +3,8 @@ from . import endpoints
 import os
 import base64
 import random
+import nacl.secret
+import nacl.utils
 
 #TODO Implement authentcation
 """
@@ -27,20 +29,19 @@ We could be our own OAuth provider
 I don't think that this works for our current use case
 """
 
-#TODO Create decorator for the API Key authentication, then just use that at ever endpoint that needs it.
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
-#Set the secret key on startup.  This will require you to have control of the server in order to register a Bot
-api.secret_key = str(base64.b64encode(os.urandom(32)))
-print "Connection Key:", api.secret_key
+#Use the library NaCl to generate a secret key and base64 encode it for easy copying
+api.secret_key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+print "Connection Key:", base64.b64encode(api.secret_key)
+box = nacl.secret.SecretBox(api.secret_key)
 
+#TODO Do I need to delete this
 #seed a random number generator with our newly generated secret key
 random.seed(api.secret_key)
 
-#TODO Create a decorator to require the API Key
-
-
+#TODO Create decorator for the API Key authentication, then just use that at ever endpoint that needs it.
 
 
 @api.route('/', methods=['GET','POST'])
@@ -51,10 +52,14 @@ def welcome():
 @api.route('/bot/session/open', methods=['POST'])
 def FlaskBotSessionOpen():
     #Get the key from the json blob
-    key = request.json.get('key')
-    #TODO Decrypt the key with api.secret_key (AES 256)
+    b64_key = request.json.get('key')
+    #TODO Decrypt the key using NaCl
+    encrytped_key = base64.b64decode(b64_key)
+    key = box.decrypt(encrytped_key)
+
     #If they have the key
     if key == api.secret_key:
+        """
         #TODO Create a BotID and an API key and store it in a session object
         #If duplicate, try again
         while True:
@@ -66,6 +71,7 @@ def FlaskBotSessionOpen():
         
         botApiKey = str(base64.b64encode(os.urandom(32)))
         session[botID] = botApiKey
+        """
     #if they don't have the key
         #return a 401 Unauthorized
         #TODO Return the botID and the API Key encrypted with the shared secret
