@@ -34,7 +34,7 @@ api = Blueprint('api', __name__, url_prefix='/api')
 
 #Use the library NaCl to generate a secret key and base64 encode it for easy copying
 api.secret_key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
-print "Connection Key:", base64.b64encode(api.secret_key)
+print("Connection Key: %s"  %(base64.b64encode(api.secret_key)))
 box = nacl.secret.SecretBox(api.secret_key)
 
 #TODO Do I need to delete this?
@@ -53,7 +53,7 @@ def welcome():
 def FlaskBotSessionOpen():
     #Get the key from the json blob
     b64_key = request.json.get('key')
-    print "b64_key:", b64_key
+    print("b64_key: %s" %(b64_key))
 
     #Decrypt the key using NaCl
     encrytped_key = base64.b64decode(b64_key)
@@ -61,32 +61,32 @@ def FlaskBotSessionOpen():
 
     #If they have the key
     if key == api.secret_key:
-        print "They're equal"
+        print("They're equal")
         #TODO Create a BotID and an API key and store it in a session object
         #If duplicate, try again
         while True:
-            print "made it into the loop"
+            print("Made it into the loop")
             botID = random.randint(0, 999)
-            print botID
+            print(botID)
             #If we found a unique botID then use that one
-            print "Session", session               
+            print("Session", session)
             if botID not in session:
-                print "ID found"
-                print "ID assigned"
+                print("ID found")
+                print("ID assigned")
                 break
-        
-        print botID
+
+        print(botID)
         botApiKey = str(base64.b64encode(os.urandom(32)))
-        print "botApiKey", botApiKey
+        print("botApiKey", botApiKey)
         session.new
         session[botID] = botApiKey
-        print session[botID]
+        print(session[botID])
     #if they don't have the key
         #return a 401 Unauthorized
         #TODO Return the botID and the API Key encrypted with the shared secret
         #Do this as a JSON object that has an encrypted (AES 256) JSON blob in it with the ID and Key
         resp = Response(flask.json.jsonify(BotID=botID, Key=botApiKey), status=200, mimetype='application/json')
-        print resp
+        print(resp)
         return resp
     else:
         abort(401) #Unauthorized
