@@ -95,29 +95,29 @@ def FlaskBotSessionOpen():
 
 @api.route('/bot/session/close', methods=['POST'])
 def FlaskBotSessionClose():
-    return endpoints.BotSessionClose()
+    return endpoints.session.close()
 
 #TODO: Why is this here?
 @api.route('/bot/session/update', methods=['POST'])
 def FlaskBotSessionUpdate():
-    return endpoints.BotSessionUpdate()
+    return endpoints.session.update()
 
 #TODO Should this be a GET
 @api.route('/bot/jobs/list', methods=['POST'])
 def FlaskBotJobsList():
-    return endpoints.BotJobsList()
+    return endpoints.jobs.list()
 
 @api.route('/bot/jobs/check-in', methods=['POST'])
 def FlaskBotJobsCheckin():
-    return endpoints.BotJobsCheckin()
+    return endpoints.jobs.check_in()
 
 @api.route('/bot/jobs/request', methods=['POST'])
 def FlaskBotJobsRequest():
-    return endpoints.BotJobsRequest()
+    return endpoints.jobs.request()
 
 @api.route('/bot/jobs/abort', methods=['POST'])
 def FlaskBotJobsAbort():
-    return endpoints.BotJobsAbort()
+    return endpoints.jobs.abort()
 
 #TODO Finish prototyping server API endpoints
 #TODO Add requirements for server API endpoints
@@ -128,65 +128,65 @@ to send a JSON object specifying those parameters
 """
 @api.route('/data/session/open', methods=['POST'])
 def FlaskWebServerSessionOpen():
-    return endpoints.WebServerSessionOpen()
+    return endpoints.data.session.open()
 
 @api.route('/data/session/close', methods=['POST'])
 def FlaskWebServerSessionClose():
-    return endpoints.WebServerSessionClose()
+    return endpoints.data.session.close()
 
 #TODO Should this be a GET
 @api.route('/data/team/list', methods=['POST'])
 def FlaskWebServerTeamList():
-    return endpoints.WebServerTeamList()
+    return endpoints.data.team.list()
 
 @api.route('/data/team/create', methods=['POST'])
 def FlaskWebServerTeamCreate():
-    return endpoints.WebServerTeamCreate()
+    return endpoints.data.team.create()
 
 @api.route('/data/team/delete', methods=['POST'])
 def FlaskWebServerTeamDelete():
-    return endpoints.WebServerTeamDelete()
+    return endpoints.data.team.delete()
 
 @api.route('/data/host/list', methods=['POST'])
 def FlaskWebServerHostList():
-    return endpoints.WebServerHostList()
+    return endpoints.data.host.list()
 
 @api.route('/data/host/create', methods=['POST'])
 def FlaskWebServerHostCreate():
-    return endpoints.WebServerTeamCreate()
+    return endpoints.data.host.create()
 
 @api.route('/data/host/delete', methods=['POST'])
 def FlaskWebServerHostDelete():
-    return endpoints.WebServerHostDelete()
+    return endpoints.data.host.delete()
 
 @api.route('/data/service/list', methods=['POST'])
 def FlaskWebServersServiceList():
-    return endpoints.WebServersServiceList()
+    return endpoints.data.service.list()
 
 @api.route('/data/service/create', methods=['POST'])
 def FlaskWebServerServiceCreate():
-    return endpoints.WebServerServiceCreate()
+    return endpoints.data.service.create()
 
 @api.route('/data/service/delete', methods=['POST'])
 def FlaskWebServerServiceDelete():
-    return endpoints.WebServerServiceDelete()
+    return endpoints.data.service.delete()
 
 @api.route('/data/check/enable', methods=['POST'])
 def FlaskWebServerCheckEnable():
-    return endpoints.FlaskWebServerCheckEnable()
+    return endpoints.data.check.enable()
 
 @api.route('/data/check/disable', methods=['POST'])
 def FlaskWebServerCheckDisable():
-    return endpoints.WebServerCheckDisable()
+    return endpoints.data.check.disable()
 
 @api.route('/data/check/interval/list', methods=['POST'])
 def FlaskWebServerCheckIntervalList():
-    return endpoints.WebServerCheckIntervalList()
+    return endpoints.data.check.interval.list()
 
 @api.route('/data/check/interval/set', methods=['POST'])
 def FlaskWebServerCheckIntervalSet():
-    return endpoints.WebServerCheckIntervalSet()
+    return endpoints.data.check.interval.set()
 
 @api.route('/data/check/interval/default', methods=['POST'])
 def FlaskWebServerCheckIntervalDefault():
-    return endpoints.WebServerCheckIntervalDefault()
+    return endpoints.check.interval.default()
