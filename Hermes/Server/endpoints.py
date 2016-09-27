@@ -75,13 +75,13 @@ NOTE: The following API endpoints will expect JSON.
 If it is referencing a host on a team, it will need
 to send a JSON object specifying those parameters
 """
-def WebServerSessionOpen():
+def DataSessionOpen():
     """
     Creates a session for the web server instance
     """
     pass
 
-def WebServerSessionClose():
+def DataSessionClose():
     """
     Requires an active web server session
     Requires a valid web server session cookie
@@ -90,7 +90,7 @@ def WebServerSessionClose():
     """
     pass
 
-def WebServerTeamList():
+def DataTeamList():
     """
     Requires an active web server session
     Requires a valid web server session cookie
@@ -100,7 +100,7 @@ def WebServerTeamList():
     """
     pass
 
-def WebServerTeamCreate():
+def DataTeamCreate():
     """
     Requires an active web server session
     Requires a valid web server session cookie
@@ -115,7 +115,7 @@ def WebServerTeamCreate():
     """
     pass
 
-def WebServerTeamDelete():
+def DataTeamDelete():
     """
     Requires an active web server session
     Requires a vali web server session cookie
@@ -124,7 +124,7 @@ def WebServerTeamDelete():
     """
     pass
 
-def WebServerHostList():
+def DataHostList():
     """
     Requires an active web server session
     Requires a valid web server session cookie
@@ -132,7 +132,7 @@ def WebServerHostList():
     """
     pass
 
-def WebServerHostCreate():
+def DataHostCreate():
     """
     Requires an active web server session
     Requires a valid web server session cookie
@@ -143,17 +143,17 @@ def WebServerHostCreate():
     """
     pass
 
-def WebServerHostDelete():
+def DataHostDelete():
     """
     Requires an active web server session
     Requires a valid web server session cookie
     Requires a team ID
     Requires a Host ID
-    This function will call WebServerServiceDelete() on all services on this host
+    This function will call DataServiceDelete() on all services on this host
     """
     pass
 
-def WebServersServiceList():
+def DatasServiceList():
     """
     Requires an active web server session
     Requires a valid web server session cookie
@@ -163,7 +163,7 @@ def WebServersServiceList():
     """
     pass
 
-def WebServerServiceCreate():
+def DataServiceCreate():
     """
     Requires an active web server session
     Requires a valid web server session cookie
@@ -176,11 +176,11 @@ def WebServerServiceCreate():
         If the Service Name is an IP protocol
             Requires only IP address
     Requires IP address
-    This will call WebServerCheckEnable() on the service
+    This will call DataCheckEnable() on the service
     """
     pass
 
-def WebServerServiceDelete():
+def DataServiceDelete():
     """
     Requires an active web server session
     Requires a valid web server session cookie
@@ -191,7 +191,7 @@ def WebServerServiceDelete():
     """
     pass
 
-def WebServerCheckEnable():
+def DataCheckEnable():
     """
     requires an active web server session
     requires a valid web server session cookie
@@ -201,7 +201,7 @@ def WebServerCheckEnable():
     """
     pass
 
-def WebServerCheckDisable():
+def DataCheckDisable():
     """
     requires an active web server session
     requires a valid web server session cookie
@@ -211,7 +211,7 @@ def WebServerCheckDisable():
     """
     pass
 
-def WebServerCheckIntervalList():
+def DataCheckIntervalList():
     """
     Requires an active web server session
     Requires a valid web server session cookie
@@ -219,17 +219,17 @@ def WebServerCheckIntervalList():
     """
     pass
 
-def WebServerCheckIntervalSet():
+def DataCheckIntervalSet():
     """
     Requires an active web server session
     Requires a valid web server session cookie
     Sets the interval between check rounds
         If the supplied time value is invalid, then the time will be set to
-        the default with WebServerCheckIntervalDefault()
+        the default with DataCheckIntervalDefault()
     """
     pass
 
-def WebServerCheckIntervalDefault():
+def DataCheckIntervalDefault():
     """
     Requires an active web server session
     Requires a valid web server session cookie
