@@ -126,67 +126,67 @@ NOTE: The following API endpoints will expect JSON.
 If it is referencing a host on a team, it will need
 to send a JSON object specifying those parameters
 """
-@api.route('/web-gui/session/open', methods=['POST'])
+@api.route('/data/session/open', methods=['POST'])
 def FlaskWebServerSessionOpen():
     return endpoints.WebServerSessionOpen()
 
-@api.route('/web-gui/session/close', methods=['POST'])
+@api.route('/data/session/close', methods=['POST'])
 def FlaskWebServerSessionClose():
     return endpoints.WebServerSessionClose()
 
 #TODO Should this be a GET
-@api.route('/web-gui/team/list', methods=['POST'])
+@api.route('/data/team/list', methods=['POST'])
 def FlaskWebServerTeamList():
     return endpoints.WebServerTeamList()
 
-@api.route('/web-gui/team/create', methods=['POST'])
+@api.route('/data/team/create', methods=['POST'])
 def FlaskWebServerTeamCreate():
     return endpoints.WebServerTeamCreate()
 
-@api.route('/web-gui/team/delete', methods=['POST'])
+@api.route('/data/team/delete', methods=['POST'])
 def FlaskWebServerTeamDelete():
     return endpoints.WebServerTeamDelete()
 
-@api.route('/web-gui/host/list', methods=['POST'])
+@api.route('/data/host/list', methods=['POST'])
 def FlaskWebServerHostList():
     return endpoints.WebServerHostList()
 
-@api.route('/web-gui/host/create', methods=['POST'])
+@api.route('/data/host/create', methods=['POST'])
 def FlaskWebServerHostCreate():
     return endpoints.WebServerTeamCreate()
 
-@api.route('/web-gui/host/delete', methods=['POST'])
+@api.route('/data/host/delete', methods=['POST'])
 def FlaskWebServerHostDelete():
     return endpoints.WebServerHostDelete()
 
-@api.route('/web-gui/service/list', methods=['POST'])
+@api.route('/data/service/list', methods=['POST'])
 def FlaskWebServersServiceList():
     return endpoints.WebServersServiceList()
 
-@api.route('/web-gui/service/create', methods=['POST'])
+@api.route('/data/service/create', methods=['POST'])
 def FlaskWebServerServiceCreate():
     return endpoints.WebServerServiceCreate()
 
-@api.route('/web-gui/service/delete', methods=['POST'])
+@api.route('/data/service/delete', methods=['POST'])
 def FlaskWebServerServiceDelete():
     return endpoints.WebServerServiceDelete()
 
-@api.route('/web-gui/check/enable', methods=['POST'])
+@api.route('/data/check/enable', methods=['POST'])
 def FlaskWebServerCheckEnable():
     return endpoints.FlaskWebServerCheckEnable()
 
-@api.route('/web-gui/check/disable', methods=['POST'])
+@api.route('/data/check/disable', methods=['POST'])
 def FlaskWebServerCheckDisable():
     return endpoints.WebServerCheckDisable()
 
-@api.route('/web-gui/check/interval/list', methods=['POST'])
+@api.route('/data/check/interval/list', methods=['POST'])
 def FlaskWebServerCheckIntervalList():
     return endpoints.WebServerCheckIntervalList()
 
-@api.route('/web-gui/check/interval/set', methods=['POST'])
+@api.route('/data/check/interval/set', methods=['POST'])
 def FlaskWebServerCheckIntervalSet():
     return endpoints.WebServerCheckIntervalSet()
 
-@api.route('/web-gui/check/interval/default', methods=['POST'])
+@api.route('/data/check/interval/default', methods=['POST'])
 def FlaskWebServerCheckIntervalDefault():
     return endpoints.WebServerCheckIntervalDefault()
