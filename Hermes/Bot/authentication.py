@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import nacl.secret
 import nacl.utils
 import json
@@ -25,6 +26,7 @@ def authenticate(val, url="http://127.0.0.1:8080/api/bot/session/open"):
     req = urllib2.Request(url, data, {'Content-Type': 'application/json'})
     f = urllib2.urlopen(req)
     response = f.read()
+    print response
     f.close()
     #TODO Extract and use the API key that was returned
 
