@@ -18,6 +18,7 @@ def parse_and_run(args=None):
         ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         ctx.load_cert_chain(os.path.join(basedir, 'server.crt'),
                             os.path.join(basedir, 'server.key'))
+        app.config['SESSION_TYPE'] = 'filesystem'
         app.run(host=args.bind, port=args.port, debug=args.debug, ssl_context=ctx)
     else:
         app.run(host=args.bind, port=args.port, debug=args.debug)

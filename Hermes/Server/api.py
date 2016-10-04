@@ -1,10 +1,12 @@
 from flask import Blueprint, request, json, abort, session, sessions
+from flask_api import status
 from . import endpoints
 import os
 import base64
 import random
 import nacl.secret
 import nacl.utils
+from . import app
 
 #TODO Implement authentcation
 """
@@ -22,20 +24,19 @@ The bot will then send with each POST to the server the following two things in 
 The server will then decrypt the ciphertext, and if the resultant plaintext matches the BotID, then the client must have the API key
 """
 
-"""
-OAuth may accomplish the above thing, as well.
-We could be our own OAuth provider
-    or we could offload it onto Google OAuth
-I don't think that this works for our current use case
-"""
-
-
 api = Blueprint('api', __name__, url_prefix='/api')
 
 #Use the library NaCl to generate a secret key and base64 encode it for easy copying
 api.secret_key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+app.secret_key = api.secret_key
 print("Connection Key: %s"  %(base64.b64encode(api.secret_key)))
 box = nacl.secret.SecretBox(api.secret_key)
+
+#Set the session type
+#api.config['SESSION_TYPE'] = 'filesystem'
+
+#login_manager = LoginManager()
+#login_manager.setup_app(api)
 
 #TODO Do I need to delete this?
 #seed a random number generator with our newly generated secret key
@@ -87,7 +88,7 @@ def FlaskBotSessionOpen():
         #Do this as a JSON object that has an encrypted (AES 256) JSON blob in it with the ID and Key
         resp = Response(flask.json.jsonify(BotID=botID, Key=botApiKey), status=200, mimetype='application/json')
         print(resp)
-        return resp
+        return resp, status.HTTP_200_OK
     else:
         abort(401) #Unauthorized
     #return endpoints.BotSessionOpen(request)
