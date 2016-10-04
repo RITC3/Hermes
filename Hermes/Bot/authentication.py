@@ -2,7 +2,7 @@
 import nacl.secret
 import nacl.utils
 import json
-import urllib2
+import urllib.request
 from sys import argv
 import base64
 
@@ -21,10 +21,10 @@ def authenticate(val, url="http://127.0.0.1:8080/api/bot/session/open"):
     nonce = nacl.utils.random(nacl.secret.SecretBox.NONCE_SIZE)
     ciphertext = box.encrypt(key, nonce)
     transmit = base64.b64encode(ciphertext)
-    data = json.dumps({"key": transmit})
+    data = json.dumps({"key": str(transmit)})
     print(data)
-    req = urllib2.Request(url, data, {'Content-Type': 'application/json'})
-    f = urllib2.urlopen(req)
+    req = urllib.request.Request(url, data.encode("utf8"), {'Content-Type': 'application/json'})
+    f = urllib.request.urlopen(req)
     response = f.read()
     print(response)
     f.close()
