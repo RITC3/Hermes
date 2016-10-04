@@ -33,6 +33,7 @@ I don't think that this works for our current use case
 api = Blueprint('api', __name__, url_prefix='/api')
 
 #Use the library NaCl to generate a secret key and base64 encode it for easy copying
+#TODO save to a file and restore from it if the file is found
 api.secret_key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
 print("Connection Key: %s"  %(base64.b64encode(api.secret_key)))
 box = nacl.secret.SecretBox(api.secret_key)
