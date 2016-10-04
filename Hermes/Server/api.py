@@ -27,6 +27,7 @@ The server will then decrypt the ciphertext, and if the resultant plaintext matc
 api = Blueprint('api', __name__, url_prefix='/api')
 
 #Use the library NaCl to generate a secret key and base64 encode it for easy copying
+#TODO save to a file and restore from it if the file is found
 api.secret_key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
 app.secret_key = api.secret_key
 print("Connection Key: %s"  %(base64.b64encode(api.secret_key)))
