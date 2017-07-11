@@ -1,3 +1,4 @@
 Flask
-pynacl
+Flask-SQLAlchemy
+PyNaCl
 flask_api

@@ -1,1 +1,1 @@
-__all__ = ["check"]
+__all__ = ['check', 'interval']

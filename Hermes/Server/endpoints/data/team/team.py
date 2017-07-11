@@ -31,4 +31,3 @@ def delete():
     This action will call 
     """
     pass
-
