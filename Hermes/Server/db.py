@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 init = False
 
+
+# there's definitely a better way to do this
 def create_db(app):
     global db, init
 
