@@ -4,5 +4,8 @@ from flask import Blueprint
 mod_data = Blueprint('data', __name__, url_prefix='/api/data')
 
 
-# import this to instantiate the team controllers, models, etc.
+# instantiate the team controllers, models, etc.
 from app.mod_data import team
+
+# services
+from app.mod_data import service

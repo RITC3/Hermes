@@ -12,7 +12,7 @@ def createTeam():
     return str(t)
 
 
-@mod_data.route('/teams/list', methods=['GET', 'POST'])
+@mod_data.route('/team/list', methods=['GET', 'POST'])
 def getTeams():
     teams = Team.query.all()
     return json.dumps({'teams': [t.name for t in teams]})
