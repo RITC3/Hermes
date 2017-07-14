@@ -1,11 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import app.config as config
 
 app = Flask(__name__)
-app.config.from_object(config)
+app.config.from_object('app.config.Debug')
 
-db = SQLAlchemy(app)
+db = SQLAlchemy(app, session_options={'autocommit': True})
 
 @app.errorhandler(404)
 def page_not_found(error):
