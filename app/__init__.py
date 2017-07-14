@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config.from_object('app.config.Debug')
 
-db = SQLAlchemy(app, session_options={'autocommit': True})
+db = SQLAlchemy(app)
 
 @app.errorhandler(404)
 def page_not_found(error):

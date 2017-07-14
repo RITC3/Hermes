@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, abort
+from flask import request, jsonify
 
 from app.mod_auth.models import Auth
 
@@ -13,6 +13,6 @@ def require_auth(api_method):
             if len(keyResult) != 0:
                 return api_method(*args, **kwargs)
 
-        abort(403)
+        return jsonify({'error': 'invalid_key'}), 401
 
     return check_api_key

@@ -1,7 +1,7 @@
 from app import db
 
 class Team(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement='auto')
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True)
     score = db.Column(db.Integer, default=0)
 
