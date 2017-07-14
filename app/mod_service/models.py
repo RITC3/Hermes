@@ -6,13 +6,13 @@ class Service(db.Model):
     name = db.Column(db.String(128))
     host = db.Column(db.String(128))
     port = db.Column(db.Integer)
-    serviceType = db.Column(db.String(128))
+    service_type = db.Column(db.String(128))
 
     def __init__(self, name, host, port, service_type):
         self.name = name
         self.host = host
         self.port = port
-        self.serviceType = service_type
+        self.service_type = service_type
 
     def __repr__(self):
-        return f'<Service name="{self.name}">'
+        return f'<Service name="{self.name}" host="{self.host}" port={self.port} service_type="{self.service_type}">'
