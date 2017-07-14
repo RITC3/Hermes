@@ -1,7 +1,8 @@
-from app import db
+from ..mod_db import db
+
 
 class Team(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(128), unique=True)
     score = db.Column(db.Integer, default=0)
 

@@ -1,10 +1,15 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from .mod_db import db
+
+# blueprints
+from .mod_service.controllers import mod_service
+from .mod_team.controllers import mod_team
 
 app = Flask(__name__)
 app.config.from_object('app.config.Debug')
+app.register_blueprint(mod_service)
+app.register_blueprint(mod_team)
 
-db = SQLAlchemy(app)
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -12,8 +17,6 @@ def page_not_found(error):
     return 'Requested page does not exist', 404
 
 
-# blueprints
-from app.mod_data import mod_data as data_module
-app.register_blueprint(data_module)
-
-db.create_all()
+db.init_app(app)
+with app.app_context():
+    db.create_all()

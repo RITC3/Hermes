@@ -1,15 +1,19 @@
-from flask import jsonify, request
+from flask import Blueprint, jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
-from app.mod_data import mod_data
-from app.mod_data.team.models import Team
-from app import db
-from app.mod_auth import require_auth
+from ..mod_auth import require_auth
+from ..mod_db import db
+from .models import Team
 
-@mod_data.route('/team/create', methods=['POST'])
+mod_team = Blueprint('team', __name__, url_prefix='/api/data/team')
+
+
+@mod_team.route('/create', methods=['POST'])
 @require_auth
-def createTeam():
+def create_team():
+    # get the 'name' field from the POST form data
     name = request.form.get('name')
     if name:
+        # if the name was sent
         try:
             team = Team(name=name)
             db.session.add(team)
@@ -21,9 +25,10 @@ def createTeam():
 
     return jsonify({'success': False}), 400
 
-@mod_data.route('/team/list', methods=['GET', 'POST'])
+
+@mod_team.route('/list', methods=['GET', 'POST'])
 @require_auth
-def getTeams():
+def get_teams():
     teams = Team.query.all()
     return jsonify({
         'teams': [{
