@@ -26,6 +26,14 @@ def create_team():
     return jsonify({'success': False}), 400
 
 
+@mod_team.route('/remove', methods=['GET', 'POST'])
+@require_auth
+def remove_team():
+    team_id = request.form.get('id')
+    if id:
+        try:
+            team = Team.query()
+
 @mod_team.route('/list', methods=['GET', 'POST'])
 @require_auth
 def get_teams():
