@@ -26,13 +26,23 @@ def create_team():
     return jsonify({'success': False}), 400
 
 
-@mod_team.route('/remove', methods=['GET', 'POST'])
+@mod_team.route('/remove', methods=['POST'])
 @require_auth
 def remove_team():
     team_id = request.form.get('id')
-    if id:
+    if team_id:
         try:
-            team = Team.query()
+            team = Team.query.filter_by(id=team_id).first()
+            if team is not None:
+                db.session.delete(team)
+                db.session.commit()
+                
+                return jsonify({'success': True}), 200
+        except SQLAlchemyError:
+            db.session.rollback()
+
+    return jsonify({'success': False}), 400
+
 
 @mod_team.route('/list', methods=['GET', 'POST'])
 @require_auth
