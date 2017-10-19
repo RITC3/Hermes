@@ -31,6 +31,25 @@ def create_user():
     return jsonify({'success': False}), 400
 
 
+@mod_user.route('/remove', methods=['POST'])
+@require_auth
+def remove_user():
+    # if the user ID was provided
+    user_id = request.form.get('id')
+    if user_id:
+        try:
+            user = User.query.filter(User.id == user_id).first()
+            if user is not None:
+                db.session.delete(user)
+                db.session.commit()
+
+                return jsonify({'success': True}), 200
+        except SQLAlchemyError:
+            db.session.rollback()
+
+    return jsonify({'success': False}), 400
+
+
 @mod_user.route('/list', methods=['GET', 'POST'])
 @require_auth
 def list_users():
