@@ -30,7 +30,7 @@ def create_team():
 def remove_team():
     # if the team ID was provided
     team_id = request.form.get('id')
-    if team_id:
+    if team_id is not None:
         try:
             team = Team.query.filter(Team.id == team_id).first()
             if team is not None:
@@ -50,7 +50,7 @@ def update_team():
     # check if team ID and possible properties were given
     team_id = request.form.get('id')
     available_keys = [request.form.get(k) for k in ['name', 'score']]
-    if team_id and any(available_keys):
+    if team_id is not None and any(available_keys):
         name, score = available_keys
 
         # check that the team exists

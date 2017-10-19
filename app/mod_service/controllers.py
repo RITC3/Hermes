@@ -37,7 +37,7 @@ def create_service():
 def remove_service():
     # if the service ID was provided
     service_id = request.form.get('id')
-    if service_id:
+    if service_id is not None:
         try:
             service = Service.query.filter(Service.id == service_id).first()
             if service is not None:
@@ -57,10 +57,10 @@ def update_service():
     # check if service ID and possible properties were given
     service_id = request.form.get('id')
     available_keys = [request.form.get(k) for k in ['name', 'host', 'port', 'type']]
-    if service_id and any(available_keys):
+    if service_id is not None and any(available_keys):
         name, host, port, service_type = available_keys
 
-        # check that the team exists
+        # check that the service exists
         service = Service.query.filter(Service.id == service_id).first()
         if service is not None:
             # update the name if provided
