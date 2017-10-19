@@ -36,7 +36,7 @@ def create_user():
 def remove_user():
     # if the user ID was provided
     user_id = request.form.get('id')
-    if user_id:
+    if user_id is not None:
         try:
             user = User.query.filter(User.id == user_id).first()
             if user is not None:
@@ -46,6 +46,36 @@ def remove_user():
                 return jsonify({'success': True}), 200
         except SQLAlchemyError:
             db.session.rollback()
+
+    return jsonify({'success': False}), 400
+
+
+@mod_user.route('/update', methods=['POST'])
+@require_auth
+def update_user():
+    # check if user ID and possible properties were given
+    user_id = request.form.get('id')
+    available_keys = [request.form.get(k) for k in ['name', 'email']]
+    if user_id is not None and any(available_keys):
+        name, email = available_keys
+
+        # check that the user exists
+        user = User.query.filter(User.id == user_id).first()
+        if user is not None:
+            # update name if provided
+            if name is not None:
+                # ensure that the name is not already in use
+                if User.query.filter(User.name == name).count() == 0:
+                    user.name = name
+
+            # update email if provided
+            if email is not None:
+                # ensure that the email is not already in use
+                if User.query.filter(User.email == email).count() == 0:
+                    user.email = email
+
+            db.session.commit()
+            return jsonify({'success': True}), 200
 
     return jsonify({'success': False}), 400
 
