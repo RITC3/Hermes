@@ -1,6 +1,5 @@
-from functools import wraps
-from sqlalchemy.exc import SQLAlchemyError
 from flask import request, jsonify
+from functools import wraps
 
 from .models import Auth
 
@@ -13,18 +12,12 @@ def require_auth(api_method):
         # get the API key from the headers
         api_key = request.headers.get('X-Hermes-Auth')
         if api_key:
-            key_result = None
-            # make sure to account for any SQLAlchemy exceptions that may occur
-            try:
-                # if one has been provided, check if there's an entry for it in the auth table
-                key_result = Auth.query.filter(Auth.api_key == api_key).all()
-            except SQLAlchemyError:
-                pass
+            # if one has been provided, check if there's an entry for it in the auth table
+            key_count = Auth.query.filter(Auth.api_key == api_key).count()
 
-            if key_result:
-                # if a row was returned matching the API key, proceed
-                if len(key_result) != 0:
-                    return api_method(*args, **kwargs)
+            if key_count > 0:
+                # proceed if the API key exists
+                return api_method(*args, **kwargs)
 
         # catch-all 401 error
         return jsonify({'error': 'invalid_key'}), 401
