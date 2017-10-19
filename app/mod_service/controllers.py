@@ -32,6 +32,25 @@ def create_service():
     return jsonify({'success': False}), 400
 
 
+@mod_service.route('/remove', methods=['POST'])
+@require_auth
+def remove_service():
+    # if the service ID was provided
+    service_id = request.form.get('id')
+    if service_id:
+        try:
+            service = Service.query.filter(Service.id == service_id).first()
+            if service is not None:
+                db.session.delete(service)
+                db.session.commit()
+
+                return jsonify({'success': True}), 200
+        except SQLAlchemyError:
+            db.session.rollback()
+
+    return jsonify({'success': False}), 400
+
+
 @mod_service.route('/list', methods=['GET', 'POST'])
 @require_auth
 def list_services():
