@@ -51,6 +51,44 @@ def remove_service():
     return jsonify({'success': False}), 400
 
 
+@mod_service.route('/update', methods=['POST'])
+@require_auth
+def update_service():
+    # check if service ID and possible properties were given
+    service_id = request.form.get('id')
+    available_keys = [request.form.get(k) for k in ['name', 'host', 'port', 'type']]
+    if service_id and any(available_keys):
+        name, host, port, service_type = available_keys
+
+        # check that the team exists
+        service = Service.query.filter(Service.id == service_id).first()
+        if service is not None:
+            # update the name if provided
+            if name is not None:
+                service.name = name
+
+            # update the host if provided
+            if host is not None:
+                service.host = host
+
+            # update the port if provided
+            if port is not None:
+                # catch exception if port is not a valid int
+                try:
+                    service.port = int(port)
+                except ValueError:
+                    pass
+
+            # update the service type if provided
+            if service_type is not None:
+                service.service_type = service_type
+
+            db.session.commit()
+            return jsonify({'success': True}), 200
+
+    return jsonify({'success': False}), 400
+
+
 @mod_service.route('/list', methods=['GET', 'POST'])
 @require_auth
 def list_services():
