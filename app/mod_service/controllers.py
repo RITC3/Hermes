@@ -3,6 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from ..mod_auth import require_auth
 from ..mod_db import db
 from .models import Service
+from ..mod_check import MySQL
 
 mod_service = Blueprint('service', __name__, url_prefix='/api/data/service')
 
@@ -101,3 +102,32 @@ def list_services():
             'type': s.service_type
         } for s in services]
     })
+
+
+@mod_service.route('/check', methods=['POST'])
+@require_auth
+def check_service():
+    # get service ID if provided
+    service_id = request.form.get('id')
+    if service_id is not None:
+
+        # get the service from the DB
+        service = Service.query.filter(Service.id == service_id).first()
+        if service is not None:
+            if service.service_type == 'MySQL':
+                body_args = [request.form.get(k) for k in ['username', 'password', 'db']]
+
+                if all(body_args):
+                    username, password, db_name = body_args
+
+                    res = MySQL.check.delay(host=service.host,
+                                            port=service.port,
+                                            username=username,
+                                            password=password,
+                                            db=db_name)
+
+                    return jsonify({'success': True, 'result': res.get(timeout=1)}), 200
+            else:
+                return jsonify({'success': False, 'error': 'service_not_implemented'}), 400
+
+    return jsonify({'success': False}), 400

@@ -1,3 +1,5 @@
+pymysql
+celery
 argon2-cffi
 scrypt
 sqlalchemy
