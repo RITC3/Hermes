@@ -25,19 +25,19 @@ Hermes utilizes Celery for workers and tasks
 
 To start a single worker:
 ```bash
-$ celery worker --app app.mod_check --loglevel info
+$ celery worker --app=app.mod_check
 ```
 
 To start, stop, and restart multiple workers:
 ```bash
 # start 5 workers
-$ celery multi start 5 --app app.mod_check
+$ celery multi start 5 --app=app.mod_check
 
 # stop 5 workers
-$ celery multi stop 5 --app app.mod_check
+$ celery multi stop 5 --app=app.mod_check
 
 # restart 5 workers
-$ celery multi restart 5 --app app.mod_check
+$ celery multi restart 5 --app=app.mod_check
 ``` 
 
 To use a different broker address or a different broker entirely, look at the
@@ -49,5 +49,5 @@ Generally, to run Hermes:
 
 1. Start RabbitMQ server
 2. `cd path/to/Hermes`
-3. `celery multi start 5 --app app.mod_check`
+3. `celery multi start 5 --app=app.mod_check`
 4. `python3 run.py`
