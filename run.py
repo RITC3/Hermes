@@ -12,7 +12,7 @@ def parse_and_run(args=None):
 
     p = ArgumentParser()
     p.add_argument('--bind', '-b', action='store', help='the address to bind to', default='127.0.0.1')
-    p.add_argument('--port', '-p', action='store', type=int, help='the port to listen on', default=8080)
+    p.add_argument('--port', '-p', action='store', type=int, help='the port to listen on', default=12321)
     p.add_argument('--debug', '-d', action='store_true', help='enable debugging (use with caution)', default=False)
     p.add_argument('--ssl', '-s', action='store_true', help='enable ssl', default=False)
 

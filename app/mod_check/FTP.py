@@ -4,14 +4,15 @@ from ..mod_check import app
 
 scoring_file = '/scoring_engine-do_not_remove'
 
+
 @app.task
 def check(host, port, username, password):
-    # catch FTP ser
+    # catch FTP exceptions
     try:
         # get an FTP context
         with FTP() as ftp:
             # connect to the FTP server and login
-            ftp.connect(host=host, port=port)
+            ftp.connect(host=host, port=port, timeout=5)
             ftp.login(user=username, passwd=password)
 
             # list all files

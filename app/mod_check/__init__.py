@@ -5,7 +5,8 @@ app = Celery('hermes',
              broker='amqp://guest@localhost//',
              include=[
                  'app.mod_check.MySQL',
-                 'app.mod_check.FTP'
+                 'app.mod_check.FTP',
+                 'app.mod_check.SSH'
              ])
 
 if __name__ == '__start__':

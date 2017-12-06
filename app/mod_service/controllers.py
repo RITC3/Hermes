@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from ..mod_auth import require_auth
 from ..mod_db import db
 from .models import Service
-from ..mod_check import MySQL, FTP
+from ..mod_check import MySQL, FTP, SSH
 
 mod_service = Blueprint('service', __name__, url_prefix='/api/data/service')
 
@@ -115,6 +115,7 @@ def check_service():
         service = Service.query.filter(Service.id == service_id).first()
         if service is not None:
             service_type = service.service_type
+            res = None
 
             # MySQL
             if service_type == 'MySQL':
@@ -133,7 +134,7 @@ def check_service():
                                             db=db_name)
 
                     # return the check result
-                    return jsonify({'success': True, 'result': res.get(timeout=1)}), 200
+                    # return jsonify({'success': True, 'result': res.get(timeout=1)}), 200
 
             # FTP
             elif service_type == 'FTP':
@@ -151,8 +152,28 @@ def check_service():
                                           password=password)
 
                     # return the check result
-                    return jsonify({'success': True, 'result': res.get(timeout=5)}), 200
+                    # return jsonify({'success': True, 'result': res.get()}), 200
+            # SSH
+            elif service_type == 'SSH':
+                body_args = [request.form.get(k) for k in ['username', 'password']]
+
+                # check that all the body parameters has been provided
+                if all(body_args):
+                    # expand arguments into variables
+                    username, password = body_args
+
+                    # check the service
+                    res = SSH.check.delay(host=service.host,
+                                          port=service.port,
+                                          username=username,
+                                          password=password)
+
+                    # return the check result
             else:
                 return jsonify({'success': False, 'error': 'service_not_implemented'}), 400
+
+            if res is not None:
+                res_val = res.get(timeout=20)
+                return jsonify({'success': all(res_val is not x for x in [None, False]), 'result': res_val}), 200
 
     return jsonify({'success': False}), 400
