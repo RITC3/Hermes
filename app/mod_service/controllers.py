@@ -104,6 +104,35 @@ def list_services():
     })
 
 
+def mysql_check(service, username, password, db_name):
+    return MySQL.check.delay(host=service.host,
+                             port=service.port,
+                             username=username,
+                             password=password,
+                             db=db_name)
+
+
+def ftp_check(service, username, password):
+    return FTP.check.delay(host=service.host,
+                           port=service.port,
+                           username=username,
+                           password=password)
+
+
+def ssh_check(service, username, password):
+    return SSH.check.delay(host=service.host,
+                           port=service.port,
+                           username=username,
+                           password=password)
+
+
+service_list = {
+    'MySQL': (mysql_check, ('username', 'password', 'db_name')),
+    'FTP': (ftp_check, ('username', 'password')),
+    'SSH': (ssh_check, ('username', 'password'))
+}
+
+
 @mod_service.route('/check', methods=['POST'])
 @require_auth
 def check_service():
@@ -117,63 +146,24 @@ def check_service():
             service_type = service.service_type
             res = None
 
-            # MySQL
-            if service_type == 'MySQL':
-                body_args = [request.form.get(k) for k in ['username', 'password', 'db']]
+            # check if the service type is in the list
+            if service_type in service_list:
+                # get the check handling method and the name of the form args to check for
+                check_method, arg_names = service_list[service_type]
 
-                # check that all parameters were provided
+                # get form args and check that they all have been set
+                body_args = [request.form.get(k) for k in arg_names]
                 if all(body_args):
-                    # expand arguments into variables
-                    username, password, db_name = body_args
+                    # if so, call the check method with the service object and kwargs made from the parameters
+                    res = check_method(service, **dict(zip(arg_names, body_args)))
+                    res_val = res.get(timeout=10)
 
-                    # check the service
-                    res = MySQL.check.delay(host=service.host,
-                                            port=service.port,
-                                            username=username,
-                                            password=password,
-                                            db=db_name)
-
-                    # return the check result
-                    # return jsonify({'success': True, 'result': res.get(timeout=1)}), 200
-
-            # FTP
-            elif service_type == 'FTP':
-                body_args = [request.form.get(k) for k in ['username', 'password']]
-
-                # check that all the body parameters has been provided
-                if all(body_args):
-                    # expand arguments into variables
-                    username, password = body_args
-
-                    # check the service
-                    res = FTP.check.delay(host=service.host,
-                                          port=service.port,
-                                          username=username,
-                                          password=password)
-
-                    # return the check result
-                    # return jsonify({'success': True, 'result': res.get()}), 200
-            # SSH
-            elif service_type == 'SSH':
-                body_args = [request.form.get(k) for k in ['username', 'password']]
-
-                # check that all the body parameters has been provided
-                if all(body_args):
-                    # expand arguments into variables
-                    username, password = body_args
-
-                    # check the service
-                    res = SSH.check.delay(host=service.host,
-                                          port=service.port,
-                                          username=username,
-                                          password=password)
-
-                    # return the check result
+                    return jsonify({
+                        'success': all(res_val is not x for x in [None, False]),
+                        'result': res_val
+                    }), 200
             else:
+                # if not in the list, return an error
                 return jsonify({'success': False, 'error': 'service_not_implemented'}), 400
-
-            if res is not None:
-                res_val = res.get(timeout=20)
-                return jsonify({'success': all(res_val is not x for x in [None, False]), 'result': res_val}), 200
 
     return jsonify({'success': False}), 400

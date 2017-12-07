@@ -6,8 +6,8 @@ from .models import Auth
 
 # This decorator can be placed on any route handler to require API-key authentication
 def require_auth(api_method):
-    @wraps(api_method)
     # the actual function that does the authentication
+    @wraps(api_method)
     def check_api_key(*args, **kwargs):
         # get the API key from the headers
         api_key = request.headers.get('X-Hermes-Auth')
