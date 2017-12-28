@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from ..mod_auth import require_auth
 from ..mod_db import db
 from .models import Service
-from ..mod_check import MySQL, FTP, SSH
+from ..mod_check import MySQL, FTP, SSH, IMAP
 
 mod_service = Blueprint('service', __name__, url_prefix='/api/data/service')
 
@@ -96,6 +96,7 @@ def list_services():
     services = Service.query.all()
     return jsonify({
         'services': [{
+            'id': s.id,
             'name': s.name,
             'host': s.host,
             'port': s.port,
@@ -126,10 +127,19 @@ def ssh_check(service, username, password):
                            password=password)
 
 
+def imap_check(service, username, password, use_ssl):
+    return IMAP.check.delay(host=service.host,
+                            port=service.port,
+                            username=username,
+                            password=password,
+                            use_ssl=(use_ssl.lower() == 'true'))
+
+
 service_list = {
     'MySQL': (mysql_check, ('username', 'password', 'db_name')),
     'FTP': (ftp_check, ('username', 'password')),
-    'SSH': (ssh_check, ('username', 'password'))
+    'SSH': (ssh_check, ('username', 'password')),
+    'IMAP': (imap_check, ('username', 'password', 'use_ssl'))
 }
 
 
@@ -144,7 +154,6 @@ def check_service():
         service = Service.query.filter(Service.id == service_id).first()
         if service is not None:
             service_type = service.service_type
-            res = None
 
             # check if the service type is in the list
             if service_type in service_list:

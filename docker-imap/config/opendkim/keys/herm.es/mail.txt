@@ -1,0 +1,2 @@
+mail._domainkey	IN	TXT	( "v=DKIM1; k=rsa; "
+	  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+nh3Ms7Vd3Lsb0VheHZQjv61fJnml/XLzHEObQlLym7Ml1zjHLemdWTQEBpLU23E0d3PVr1wdrp6XLhAc9W9dJtq7FKXidQKyFm+wNqMrGgmLhtjLfdvE/wsFfNt1WWtNoiy43WhtCXswiBRXu/02MumYklGy5iOdd0wVUWxgQQIDAQAB" )  ; ----- DKIM key mail for herm.es

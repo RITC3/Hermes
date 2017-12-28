@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  mail:
+    image: tvial/docker-mailserver:latest
+    hostname: mail
+    domainname: herm.es
+    container_name: mail
+    ports:
+    - 25
+    - 143
+    - 587
+    - 993
+    volumes:
+    - maildata:/var/mail
+    - mailstate:/var/mail-state
+    - ./config/:/tmp/docker-mailserver/
+    environment:
+    - ENABLE_SPAMASSASSIN=0
+    - ENABLE_CLAMAV=0
+    - ENABLE_FAIL2BAN=0
+    - ENABLE_POSTGREY=0
+    - ONE_DIR=1
+    - DMS_DEBUG=0
+
+volumes:
+  maildata:
+    driver: local
+  mailstate:
+    driver: local
