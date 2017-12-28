@@ -1,4 +1,11 @@
+pymysql
+celery
+argon2-cffi
+scrypt
+sqlalchemy
 Flask
 Flask-SQLAlchemy
 PyNaCl
 flask_api
+passlib
+paramiko
