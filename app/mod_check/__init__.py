@@ -6,7 +6,9 @@ app = Celery('hermes',
              include=[
                  'app.mod_check.MySQL',
                  'app.mod_check.FTP',
-                 'app.mod_check.SSH'
+                 'app.mod_check.SSH',
+                 'app.mod_check.IMAP',
+                 'app.mod_check.SMTP'
              ])
 
 if __name__ == '__start__':
