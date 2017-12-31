@@ -9,3 +9,4 @@ PyNaCl
 flask_api
 passlib
 paramiko
+git+https://github.com/gorakhargosh/watchdog.git

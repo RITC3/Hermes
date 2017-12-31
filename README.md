@@ -43,11 +43,16 @@ $ celery multi restart 5 --app=app.mod_check
 To use a different broker address or a different broker entirely, look at the
 `--broker` option for `celery`.
 
+There is also a script included called `autoreload-worker.sh` which will
+automatically reload the celery worker if there have been code changes
+(similar to running flask in debug mode). This will make the development
+process much simpler as everything will automatically reload itself. 
+
 
 ## Running Hermes
 Generally, to run Hermes:
 
 1. Start RabbitMQ server
 2. `cd path/to/Hermes`
-3. `celery multi start 5 --app=app.mod_check`
+3. `celery multi start 5 --app=app.mod_check` or `bash autoreload-worker.sh`
 4. `python3 run.py`
