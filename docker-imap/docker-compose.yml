@@ -7,10 +7,10 @@ services:
     domainname: herm.es
     container_name: mail
     ports:
-    - 25
-    - 143
-    - 587
-    - 993
+    - "10025:25"
+    - "10143:143"
+    - "10465:465"
+    - "10993:993"
     volumes:
     - maildata:/var/mail
     - mailstate:/var/mail-state
