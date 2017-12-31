@@ -9,3 +9,5 @@ PyNaCl
 flask_api
 passlib
 paramiko
+requests
+hashlib
