@@ -4,7 +4,9 @@
 *.ropeproject
 *.swp
 
-celery.log
+# Celery
+celery*.log
+celery*.pid
 docker-imap/config/
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
