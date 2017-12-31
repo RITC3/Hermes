@@ -1,8 +1,8 @@
 from ..mod_check import app
 import imaplib
-import logging
+from logging import getLogger
 
-logger = logging.getLogger('mod_check.IMAP')
+logger = getLogger('mod_check.IMAP')
 
 
 @app.task
@@ -49,13 +49,13 @@ def check(host, port, username, password, use_ssl=False):
                             if res == 'OK':
                                 res, _ = mail.copy(latest_email_uid, 'Scoring')
                                 if res != 'OK':
-                                    logging.error('Error copying email to Scoring mailbox')
+                                    logger.error('Error copying email to Scoring mailbox')
                             else:
-                                logging.error('Error creating Scoring mailbox')
+                                logger.error('Error creating Scoring mailbox')
                     else:
-                        logging.error('No messages fetched')
+                        logger.error('No messages fetched')
                 else:
-                    logging.error('Error getting all messages')
+                    logger.error('Error getting all messages')
             else:
                 logger.error('Scoring mailbox does not exist')
 
