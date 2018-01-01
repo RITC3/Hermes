@@ -9,3 +9,5 @@
 # you have to install it direct from the git repo and do: pip install git+https://github.com/gorakhargosh/watchdog.git
 
 watchmedo auto-restart -d app/mod_check -p '*.py' -- celery worker -A app.mod_check
+pkill -9 -f 'celery worker'
+

@@ -1,11 +1,13 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
+from logging import getLogger
 from ..mod_auth import require_auth
 from ..mod_db import db
 from .models import Service
-from ..mod_check import MySQL, FTP, SSH, IMAP
+from ..mod_check import MySQL, FTP, SSH, IMAP, SMTP
 
 mod_service = Blueprint('service', __name__, url_prefix='/api/data/service')
+logger = getLogger('mod_check')
 
 
 @mod_service.route('/create', methods=['POST'])
@@ -135,11 +137,21 @@ def imap_check(service, username, password, use_ssl):
                             use_ssl=(use_ssl.lower() == 'true'))
 
 
+def smtp_check(service, username, password, domain, use_ssl):
+    return SMTP.check.delay(host=service.host,
+                            port=service.port,
+                            username=username,
+                            password=password,
+                            domain=domain,
+                            use_ssl=(use_ssl.lower() == 'true'))
+
+
 service_list = {
     'MySQL': (mysql_check, ('username', 'password', 'db_name')),
     'FTP': (ftp_check, ('username', 'password')),
     'SSH': (ssh_check, ('username', 'password')),
-    'IMAP': (imap_check, ('username', 'password', 'use_ssl'))
+    'IMAP': (imap_check, ('username', 'password', 'use_ssl')),
+    'SMTP': (smtp_check, ('username', 'password', 'domain', 'use_ssl'))
 }
 
 
@@ -171,8 +183,15 @@ def check_service():
                         'success': all(res_val is not x for x in [None, False]),
                         'result': res_val
                     }), 200
+                else:
+                    logger.error('Missing body arguments: %s', ', '.join(set(arg_names) - set(request.form)))
             else:
                 # if not in the list, return an error
+                logger.error('Service %s not implemented', service_type)
                 return jsonify({'success': False, 'error': 'service_not_implemented'}), 400
+        else:
+            logger.error('Service ID not found in database')
+    else:
+        logger.error('Service ID not provided')
 
     return jsonify({'success': False}), 400
