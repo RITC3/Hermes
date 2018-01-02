@@ -5,6 +5,7 @@ from .mod_db import db
 from .mod_service.controllers import mod_service
 from .mod_team.controllers import mod_team
 from .mod_user.controllers import mod_user
+from .mod_webui.controllers import mod_webui
 
 app = Flask(__name__)
 app.config.from_object('app.config.Debug')
@@ -13,6 +14,7 @@ app.config.from_object('app.config.Debug')
 app.register_blueprint(mod_service)
 app.register_blueprint(mod_team)
 app.register_blueprint(mod_user)
+app.register_blueprint(mod_webui)
 
 
 @app.errorhandler(404)
