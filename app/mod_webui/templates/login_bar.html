@@ -1,0 +1,40 @@
+<!-- start login bar -->
+<ul id="slide-out" class="side-nav fixed z-depth-4">
+      <li>
+        <div class="userView">
+          <div class="background">
+            <img src="{{ url_for('static', filename='img/photo1.png') }}">
+          </div>
+          <a href="/"><span class="white-text name">Welcome</span></a>
+          <a href="/"><span class="white-text email">Log in below!</span></a>
+        </div>
+      </li>
+     
+      <li>
+        <form action="login" method="POST">
+            <div class='row'>
+                <div class='input-field col s10 push-s1'>
+                    <input class='validate' type='text' name='username' placeholder="username"/>
+                </div>
+            </div>
+
+            <div class='row'>
+                <div class='input-field col s10 push-s1'>
+                    <input class='validate' type='password' name='password' placeholder="password" />
+                </div>
+            </div>
+
+            <center>
+                <div class='row'>
+                    <button type='submit' class='col s12 btn btn-large waves-effect orange'>login</button>
+                </div>
+            </center>
+        </form>
+        <center>
+            <div class='row'>
+                <a class="col s12 btn btn-large waves-effect red" href="/register">register</a>
+            </div>
+        </center>
+        </li>
+    </ul>
+<!-- end login bar -->

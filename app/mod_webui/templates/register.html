@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="POST">
+    <div class='row'>
+        <div class='input-field col s10 push-s1'>
+            <input class='validate' type='text' name='username' placeholder="username"/>
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='input-field col s10 push-s1'>
+            <input class='validate' type='password' name='password' placeholder="password" />
+        </div>
+    </div>
+
+    <div class='row'>
+        <div class='input-field col s10 push-s1'>
+            <input class='validate' type='password' name='password2' placeholder="repeat password" />
+    </div>
+
+    <center>
+        <div class='row'>
+            <button type='submit' class='col s10 push-s1 btn btn-large waves-effect orange'>Register</button>
+        </div>
+    </center>
+</form>
+{% endblock %}
