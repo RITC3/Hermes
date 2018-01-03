@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" />
   </head>
   <!-- logic subject to change -->
   {% if request.cookies.get('username') and request.path != '/register' %}
@@ -36,7 +37,7 @@
     <footer class="page-footer">
       <div class="footer-copyright">
         <div class="container">
-          © 2017 Farooq Designs. All rights reserved.
+          © 2018 RITC3
         </div>
       </div>
     </footer>
