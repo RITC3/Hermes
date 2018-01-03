@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+ <div class="container">
+    <div class="quick-links center-align">
+        <h3>Configure {{ service }}</h3>
+        <!-- need more information before I can finish this, can possibly use conditional includes as well -->
+        <form method="POST">
+            <div class='row'>
+                <div class='input-field col s10 push-s1'>
+                    <input class='validate' type='text' name='first' placeholder="first"/>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='input-field col s10 push-s1'>
+                    <input class='validate' type='text' name='second' placeholder="second" />
+                </div>
+            </div>
+            <center>
+                <div class='row'>
+                    <button type='submit' class='col s10 push-s1 btn btn-large waves-effect orange'>Configure</button>
+                </div>
+            </center>
+        </form>
+    </div>
+ </div>
+{% endblock %}

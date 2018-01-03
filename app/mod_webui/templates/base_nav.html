@@ -7,53 +7,51 @@
           </div>
           <a href="/"><img class="circle" src="{{ url_for('static', filename='img/avatar04.png') }}"></a>
           <a href="/"><span class="white-text name">Welcome back,</span></a>
-          <a href="/"><span class="white-text email">{{ username }}</span></a>
+          <a href="/"><span class="white-text email">{{ request.cookies.get('username') }}</span></a>
         </div>
       </li>
       
-      <li>
-        <form class="sidebar-form">
-          <div class="input-group">
-            <input id="accounts" type="text" name="username" class="form-control" placeholder="Universal Search" autocomplete="off" />
-          </div>
-        </form>
-      </li>
-      
-      <li><a class="active" href="index.html"><i class="material-icons pink-item">dashboard</i>Dashboard</a></li>
+      <li><a class="active" href="{{ url_for('webui.index')}}"><i class="material-icons pink-item">dashboard</i>Dashboard</a></li>
       <li><div class="divider"></div></li>
       
       <li><a class="subheader">Management</a></li>
-      <li><a href="names.html"><i class="material-icons pink-item">thumbs_up_down</i>Name Approvals</a></li>
-      <li><a href="comments.html"><i class="material-icons pink-item">note_add</i>News Comments</a></li>
+
+      <!-- kinda jank the padding with the borrowed classes -->
+      <li><a class="collapsible-header" href="{{ url_for('webui.results') }}"><i class="material-icons pink-item">insert_chart</i>Check Results</a></li>
       
       <li class="no-padding">
         <ul class="collapsible collapsible-accordion">
           <li>
-            <a class="collapsible-header">User Management<i class="material-icons pink-item">person</i></a>
+            <a class="collapsible-header">Configure Services<i class="material-icons pink-item">settings</i></a>
             <div class="collapsible-body">
               <ul>
-                <li><a href="userdetails.html">User Detail</a></li>
-                <li><a href="recentusers.html">Recent Users</a></li>
-                <li><a href="reports.html">Reports</a></li>
+                <!-- add services (and icons) to controller dict -->
+                {% for service, icon in all_services %}
+                    <li><a href="{{ url_for('webui.config', service=service) }} "><i class="material-icons">{{icon}}</i>{{service}}</a></li>
+                {% endfor %}
               </ul>
             </div>
           </li>
         </ul>
       </li>
       
+      {% if is_admin %}
       <li class="no-padding">
         <ul class="collapsible collapsible-accordion">
           <li>
-            <a class="collapsible-header">Announcements<i class="material-icons pink-item">arrow_drop_down</i></a>
+            <a class="collapsible-header">Admin<i class="material-icons pink-item">build</i></a>
             <div class="collapsible-body">
               <ul>
-                <li><a href="addannoun.html">Add New</a></li>
-                <li><a href="allannoun.html">All Announcements</a></li>
+                <li><a href="#">Add New Something</a></li>
+                <li><a href="#">Other Admin thing</a></li>
+                <li><a href="#">...etc...</a></li>
               </ul>
             </div>
           </li>
         </ul>
       </li>
+      {% endif %}
+
       <li>
         <div class='row'>
                 <a class="col s12 btn btn-large waves-effect red" href="/logout">Logout</a>

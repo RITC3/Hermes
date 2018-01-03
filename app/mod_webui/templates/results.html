@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- I'm not thrilled with the title like this -->
+<center><h3>Results</h3></center>
+<!-- get's a little wonky on resize since icons are larger than text, again low priority fix -->
+<table class="responsive-table centered hover striped">
+    <thead>
+    <tr>
+        <!-- this looked wack and not worth it to fix <i class="material-icons">{{icon}}</i></th>-->
+        {% for service, icon in all_services %}
+            <th>{{service}}</th> 
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <button class="btn red">
+                <i class="material-icons">close</i>
+            </button>
+        </td>
+        <td>
+            <button class="btn green">
+                <i class="material-icons">check</i>
+            </button>
+        </td>
+        <td>
+            <button class="btn green">
+                <i class="material-icons">done</i>
+            </button>
+        </td>
+        <td>
+            <button class="btn red">
+                <i class="material-icons">error_outline</i>
+            </button>
+        </td>
+        <td>
+            <button class="btn green">
+                <i class="material-icons">done</i>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button class="btn green">
+                <i class="material-icons">done</i>
+            </button>
+        </td>
+        <td>
+            <button class="btn red">
+                <i class="material-icons">error_outline</i>
+            </button>
+        </td>
+        <td>
+            <button class="btn green">
+                <i class="material-icons">done</i>
+            </button>
+        </td>
+        <td>
+            <button class="btn green">
+                <i class="material-icons">done</i>
+            </button>
+        </td>
+        <td>
+            <button class="btn red">
+                <i class="material-icons">error_outline</i>
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+{% endblock %}

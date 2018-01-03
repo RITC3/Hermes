@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" type="text/css" />
   </head>
-  <!-- eventually this will check for if they are logged in -->
-  {% if username and request.path != '/register' %}
+  <!-- logic subject to change -->
+  {% if request.cookies.get('username') and request.path != '/register' %}
     {% include 'base_nav.html' %}  
   {% else %}
     {% include 'login_bar.html' %} 
@@ -20,8 +20,8 @@
     <main>
     <section class="content">
     <div class="page-announce valign-wrapper bg-yellow"><a href="#" data-activates="slide-out" class="button-collapse valign hide-on-large-only"><i class="material-icons">menu</i></a><h1 class="page-announce-text valign">☤ Hermes Dashboard ☤</h1></div>
-    <!-- if logged in or referer /register (logic gets a bit weird) -->
-    {% if username %}
+    <!-- if logged in or at /register (logic is a bit weird) -->
+    {% if request.cookies.get('username') or request.path == '/register' %}
       {% block content %}
       {% endblock %}
     {% else %}
@@ -61,6 +61,7 @@
       $('select').material_select();
       $('.collapsible').collapsible();
       </script>
+    <!--
       <div class="fixed-action-btn horizontal tooltipped" data-position="top" dattooltipped" data-position="top" data-delay="50" data-tooltip="Quick Links">
         <a class="btn-floating btn-large red">
           <i class="large material-icons">mode_edit</i>
@@ -73,6 +74,7 @@
           <li><a class="btn-floating orange tooltipped" data-position="top" data-delay="50" data-tooltip="Support" href="#"><i class="material-icons">person</i></a></li>
         </ul>
       </div>
+    -->
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   </body>
