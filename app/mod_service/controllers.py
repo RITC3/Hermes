@@ -7,7 +7,7 @@ from .models import Service
 from ..mod_check import MySQL, FTP, SSH, IMAP, SMTP, SMB
 
 mod_service = Blueprint('service', __name__, url_prefix='/api/data/service')
-logger = getLogger('mod_check')
+logger = getLogger(__name__)
 
 
 @mod_service.route('/create', methods=['POST'])
@@ -146,11 +146,12 @@ def smtp_check(service, username, password, domain, use_ssl):
                             use_ssl=(use_ssl.lower() == 'true'))
 
 
-def smb_check(service, username, password):
+def smb_check(service, username, password, remote_name):
     return SMB.check.delay(host=service.host,
                            port=service.port,
                            username=username,
-                           password=password)
+                           password=password,
+                           remote_name=remote_name)
 
 
 service_list = {
@@ -159,7 +160,7 @@ service_list = {
     'SSH': (ssh_check, ('username', 'password')),
     'IMAP': (imap_check, ('username', 'password', 'use_ssl')),
     'SMTP': (smtp_check, ('username', 'password', 'domain', 'use_ssl')),
-    'SMB': (smb_check, ('username', 'password'))
+    'SMB': (smb_check, ('username', 'password', 'remote_name'))
 }
 
 
