@@ -8,6 +8,6 @@
 # if you are on macOS, watchdog is because there have been bug fixes that aren't in the latest version release. instead
 # you have to install it direct from the git repo and do: pip install git+https://github.com/gorakhargosh/watchdog.git
 
-watchmedo auto-restart -d app/mod_check -p '*.py' -- celery worker -A app.mod_check
+watchmedo auto-restart -d app/mod_check -p '*.py' -- celery worker -A app.mod_check -l INFO
 pkill -9 -f 'celery worker'
 
