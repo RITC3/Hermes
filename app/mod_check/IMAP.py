@@ -1,8 +1,10 @@
 from ..mod_check import app
 import imaplib
-from logging import getLogger
+from celery.utils.log import get_task_logger
+from logging import DEBUG
 
-logger = getLogger('mod_check.IMAP')
+logger = get_task_logger(__name__)
+logger.setLevel(DEBUG)
 
 
 @app.task

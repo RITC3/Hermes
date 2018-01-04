@@ -1,10 +1,12 @@
 from ..mod_check import app
 from smtplib import SMTP, SMTPException
-from logging import getLogger
+from celery.utils.log import get_task_logger
+from logging import DEBUG
 from os import urandom
 from binascii import hexlify
 
-logger = getLogger('mod_check.SMTP')
+logger = get_task_logger(__name__)
+logger.setLevel(DEBUG)
 
 
 def rand_hex_str(length):
