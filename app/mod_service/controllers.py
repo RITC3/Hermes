@@ -4,10 +4,10 @@ from logging import getLogger
 from ..mod_auth import require_auth
 from ..mod_db import db
 from .models import Service
-from ..mod_check import MySQL, FTP, SSH, IMAP, SMTP
+from ..mod_check import MySQL, FTP, SSH, IMAP, SMTP, SMB
 
 mod_service = Blueprint('service', __name__, url_prefix='/api/data/service')
-logger = getLogger('mod_check')
+logger = getLogger(__name__)
 
 
 @mod_service.route('/create', methods=['POST'])
@@ -146,12 +146,21 @@ def smtp_check(service, username, password, domain, use_ssl):
                             use_ssl=(use_ssl.lower() == 'true'))
 
 
+def smb_check(service, username, password, remote_name):
+    return SMB.check.delay(host=service.host,
+                           port=service.port,
+                           username=username,
+                           password=password,
+                           remote_name=remote_name)
+
+
 service_list = {
     'MySQL': (mysql_check, ('username', 'password', 'db_name')),
     'FTP': (ftp_check, ('username', 'password')),
     'SSH': (ssh_check, ('username', 'password')),
     'IMAP': (imap_check, ('username', 'password', 'use_ssl')),
-    'SMTP': (smtp_check, ('username', 'password', 'domain', 'use_ssl'))
+    'SMTP': (smtp_check, ('username', 'password', 'domain', 'use_ssl')),
+    'SMB': (smb_check, ('username', 'password', 'remote_name'))
 }
 
 

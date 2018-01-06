@@ -8,7 +8,8 @@ app = Celery('hermes',
                  'app.mod_check.FTP',
                  'app.mod_check.SSH',
                  'app.mod_check.IMAP',
-                 'app.mod_check.SMTP'
+                 'app.mod_check.SMTP',
+                 'app.mod_check.SMB'
              ])
 
 if __name__ == '__start__':
