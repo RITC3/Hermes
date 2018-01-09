@@ -9,7 +9,15 @@ class Team(db.Model):
 
     def __init__(self, username, password):
         self.username = username
-        self.password = argon2.using(time_cost=160, memory_cost=10240, parallelism=8).hash(password)
+        self.password = Team.hash_password(password)
 
     def __repr__(self):
         return f'<Team name="{self.name}" score={self.score}>'
+
+    @staticmethod
+    def hash_password(password):
+        return argon2.using(time_cost=160, memory_cost=10240, parallelism=8).hash(password)
+
+    # compare the given password to the stored hash
+    def check_password(self, password):
+        return argon2.verify(password, self.password)
