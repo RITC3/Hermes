@@ -7,6 +7,7 @@ class Service(db.Model):
     host = db.Column(db.String(128))
     port = db.Column(db.Integer)
     service_type = db.Column(db.String(128))
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=False)
 
     def __init__(self, name, host, port, service_type):
         self.name = name
