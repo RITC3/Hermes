@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from sqlalchemy.exc import SQLAlchemyError
 from logging import getLogger
 from ..mod_auth import require_auth
@@ -19,18 +19,34 @@ def create_service():
     if all(service_params):
         # expand out into variables
         name, host, port, service_type = service_params
+        team_id = None
 
-        # try to add it into the DB
-        try:
-            service = Service(name=name, host=host, port=int(port), service_type=service_type)
-            db.session.add(service)
-            db.session.commit()
+        # if an admin, get the service team ID from the body parameters
+        if session.get('_admin', False):
+            team_id = request.form.get('team')
+        else:
+            # if there's a team session cookie, get that as the team ID
+            if '_team' in session:
+                team_id = session['_team']
+            else:
+                logger.error('No team session cookie')
 
-            return jsonify({'success': True, 'id': service.id})
-        except (SQLAlchemyError, TypeError):
-            # catch TypeError in case the int conversion fails
-            db.session.rollback()
-            pass
+        # check that the team ID has been retrieved
+        if team_id is not None:
+            # try to add it into the DB
+            try:
+                service = Service(name=name, host=host, port=int(port), service_type=service_type, team_id=int(team_id))
+                db.session.add(service)
+                db.session.commit()
+
+                return jsonify({'success': True, 'id': service.id})
+            except (SQLAlchemyError, TypeError) as e:
+                logger.exception(e)
+                # catch TypeError in case the int conversion fails
+                db.session.rollback()
+                pass
+        else:
+            logger.error('No team ID')
 
     return jsonify({'success': False}), 400
 
@@ -38,20 +54,26 @@ def create_service():
 @mod_service.route('/remove', methods=['POST'])
 @require_auth
 def remove_service():
-    # if the service ID was provided
-    service_id = request.form.get('id')
-    if service_id is not None:
-        try:
-            service = Service.query.filter(Service.id == service_id).first()
-            if service is not None:
-                db.session.delete(service)
-                db.session.commit()
+    return_code = 401
+    if session.get('_admin', False):
+        # if the service ID was provided
+        service_id = request.form.get('id')
+        if service_id is not None:
+            try:
+                service = Service.query.filter(Service.id == service_id).first()
+                if service is not None:
+                    db.session.delete(service)
+                    db.session.commit()
 
-                return jsonify({'success': True}), 200
-        except SQLAlchemyError:
-            db.session.rollback()
+                    return jsonify({'success': True}), 200
+            except SQLAlchemyError as e:
+                logger.exception(e)
+                db.session.rollback()
 
-    return jsonify({'success': False}), 400
+        # return a 400 Bad Request if something went wrong
+        return_code = 400
+
+    return jsonify({'success': False}), return_code
 
 
 @mod_service.route('/update', methods=['POST'])
@@ -95,16 +117,26 @@ def update_service():
 @mod_service.route('/list', methods=['GET', 'POST'])
 @require_auth
 def list_services():
-    services = Service.query.all()
-    return jsonify({
-        'services': [{
-            'id': s.id,
-            'name': s.name,
-            'host': s.host,
-            'port': s.port,
-            'type': s.service_type
-        } for s in services]
-    })
+    services = None
+    if session.get('_admin', False):
+        services = Service.query.all()
+    elif '_team' in session:
+        services = Service.query.filter(Service.team_id == session['_team']).all()
+    else:
+        logger.error('No team or admin cookies!?')
+
+    if services is not None:
+        return jsonify({
+            'services': [{
+                'id': s.id,
+                'name': s.name,
+                'host': s.host,
+                'port': s.port,
+                'type': s.service_type
+            } for s in services]
+        })
+
+    return jsonify({'success': False}), 400
 
 
 def mysql_check(service, username, password, db_name):
