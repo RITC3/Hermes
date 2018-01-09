@@ -4,7 +4,6 @@ from .mod_db import db
 # blueprints
 from .mod_service.controllers import mod_service
 from .mod_team.controllers import mod_team
-from .mod_user.controllers import mod_user
 
 app = Flask(__name__)
 app.config.from_object('app.config.Debug')
@@ -12,7 +11,6 @@ app.config.from_object('app.config.Debug')
 # register blueprints
 app.register_blueprint(mod_service)
 app.register_blueprint(mod_team)
-app.register_blueprint(mod_user)
 
 
 @app.errorhandler(404)

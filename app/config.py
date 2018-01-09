@@ -3,6 +3,7 @@ from os import path
 # Base directory
 BASE_DIR = path.abspath(path.dirname(__file__))
 
+
 class Config:
     # Application threads
     THREADS_PER_PAGE = 2
@@ -12,6 +13,7 @@ class Config:
 
     # No need for modification tracking events
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 
 class Debug(Config):
     # Enable debugging features

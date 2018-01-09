@@ -9,6 +9,7 @@ class Auth(db.Model):
     api_key = db.Column(db.String(32), unique=True, nullable=False)
 
     def __init__(self, name, api_key=None):
+        # used for key association
         self.name = name
 
         # default to a random, 32-character long API key if one is not explicitly provided
