@@ -13,51 +13,67 @@ logger = getLogger(__name__)
 @mod_service.route('/create', methods=['POST'])
 @require_auth
 def create_service():
-    service_params = [request.form.get(k) for k in ['name', 'host', 'port', 'type']]
+    return_code = 401
 
-    # check that all the necessary params have been provided and contain a value
-    if all(service_params):
-        # expand out into variables
-        name, host, port, service_type = service_params
-        team_id = None
+    # for now, only admins should be able to create new services
+    if session.get('_admin', False):
+        service_params = [request.form.get(k) for k in ['name', 'host', 'port', 'type', 'team_id']]
 
-        # if an admin, get the service team ID from the body parameters
-        if session.get('_admin', False):
-            team_id = request.form.get('team')
-        else:
-            # if there's a team session cookie, get that as the team ID
-            if '_team' in session:
-                team_id = session['_team']
+        # check that all the necessary params have been provided and contain a value
+        if all(service_params):
+            # expand out into variables
+            name, host, port, service_type, team_id = service_params
+            # team_id = None
+
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # if teams should be able to make their own services,
+            # uncomment this and remove the first check
+            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            # if an admin, get the service team ID from the body parameters
+            # if session.get('_admin', False):
+            #     team_id = request.form.get('team')
+            # else:
+            #     # if there's a team session cookie, get that as the team ID
+            #     if '_team' in session:
+            #         team_id = session['_team']
+            #     else:
+            #         logger.error('No team session cookie')
+
+            # check that the team ID has been retrieved
+            if team_id is not None:
+                # try to add it into the DB
+                try:
+                    service = Service(name=name,
+                                      host=host,
+                                      port=int(port),
+                                      service_type=service_type,
+                                      team_id=int(team_id))
+                    db.session.add(service)
+                    db.session.commit()
+
+                    return jsonify({'success': True, 'id': service.id})
+                except (SQLAlchemyError, TypeError) as e:
+                    logger.exception(e)
+                    # catch TypeError in case the int conversion fails
+                    db.session.rollback()
+                    pass
             else:
-                logger.error('No team session cookie')
+                logger.error('No team ID')
 
-        # check that the team ID has been retrieved
-        if team_id is not None:
-            # try to add it into the DB
-            try:
-                service = Service(name=name, host=host, port=int(port), service_type=service_type, team_id=int(team_id))
-                db.session.add(service)
-                db.session.commit()
+            return_code = 400
 
-                return jsonify({'success': True, 'id': service.id})
-            except (SQLAlchemyError, TypeError) as e:
-                logger.exception(e)
-                # catch TypeError in case the int conversion fails
-                db.session.rollback()
-                pass
-        else:
-            logger.error('No team ID')
-
-    return jsonify({'success': False}), 400
+    return jsonify({'success': False}), return_code
 
 
 @mod_service.route('/remove', methods=['POST'])
 @require_auth
 def remove_service():
     return_code = 401
+    # only an admin should be able to remove a service
     if session.get('_admin', False):
         # if the service ID was provided
-        service_id = request.form.get('id')
+        service_id = request.form.get('service_id')
         if service_id is not None:
             try:
                 service = Service.query.filter(Service.id == service_id).first()
@@ -79,8 +95,10 @@ def remove_service():
 @mod_service.route('/update', methods=['POST'])
 @require_auth
 def update_service():
+    return_code = 400
+
     # check if service ID and possible properties were given
-    service_id = request.form.get('id')
+    service_id = request.form.get('service_id')
     available_keys = [request.form.get(k) for k in ['name', 'host', 'port', 'type']]
     if service_id is not None and any(available_keys):
         name, host, port, service_type = available_keys
@@ -88,30 +106,51 @@ def update_service():
         # check that the service exists
         service = Service.query.filter(Service.id == service_id).first()
         if service is not None:
-            # update the name if provided
-            if name is not None:
-                service.name = name
+            success = True
+            team_id = None
+            is_admin = session.get('_admin', False)
+            # get the team ID
+            if '_team' in session:
+                team_id = session['_team']
 
-            # update the host if provided
-            if host is not None:
-                service.host = host
+            # check if admin or logged in
+            if is_admin or (team_id is not None and service.team_id == team_id):
+                # update the name if provided
+                if name is not None:
+                    service.name = name
 
-            # update the port if provided
-            if port is not None:
-                # catch exception if port is not a valid int
-                try:
-                    service.port = int(port)
-                except ValueError:
-                    pass
+                # update the host if provided (admin-only)
+                if host is not None:
+                    if is_admin:
+                        service.host = host
+                    else:
+                        logger.error('Non-admin failed to update service host')
+                        success = False
 
-            # update the service type if provided
-            if service_type is not None:
-                service.service_type = service_type
+                # update the port if provided
+                if port is not None:
+                    # catch exception if port is not a valid int
+                    try:
+                        service.port = int(port)
+                    except ValueError:
+                        pass
 
-            db.session.commit()
-            return jsonify({'success': True}), 200
+                # update the service type if provided (admin-only)
+                if service_type is not None:
+                    if is_admin:
+                        service.service_type = service_type
+                    else:
+                        logger.error('Non-admin failed to update service type')
+                        success = False
 
-    return jsonify({'success': False}), 400
+                if success:
+                    db.session.commit()
+                    return jsonify({'success': True}), 200
+            else:
+                logger.error('Team ID mismatch or not admin!')
+                return_code = 401
+
+    return jsonify({'success': False}), return_code
 
 
 @mod_service.route('/list', methods=['GET', 'POST'])
@@ -199,40 +238,45 @@ service_list = {
 @mod_service.route('/check', methods=['POST'])
 @require_auth
 def check_service():
-    # get service ID if provided
-    service_id = request.form.get('id')
-    if service_id is not None:
+    return_code = 401
 
-        # get the service from the DB
-        service = Service.query.filter(Service.id == service_id).first()
-        if service is not None:
-            service_type = service.service_type
+    # only admins can manually check a service by ID
+    if session.get('_admin', False):
+        # get service ID if provided
+        service_id = request.form.get('service_id')
+        if service_id is not None:
+            # get the service from the DB
+            service = Service.query.filter(Service.id == service_id).first()
+            if service is not None:
+                service_type = service.service_type
 
-            # check if the service type is in the list
-            if service_type in service_list:
-                # get the check handling method and the name of the form args to check for
-                check_method, arg_names = service_list[service_type]
+                # check if the service type is in the list
+                if service_type in service_list:
+                    # get the check handling method and the name of the form args to check for
+                    check_method, arg_names = service_list[service_type]
 
-                # get form args and check that they all have been set
-                body_args = [request.form.get(k) for k in arg_names]
-                if all(body_args):
-                    # if so, call the check method with the service object and kwargs made from the parameters
-                    res = check_method(service, **dict(zip(arg_names, body_args)))
-                    res_val = res.get(timeout=10)
+                    # get form args and check that they all have been set
+                    body_args = [request.form.get(k) for k in arg_names]
+                    if all(body_args):
+                        # if so, call the check method with the service object and kwargs made from the parameters
+                        res = check_method(service, **dict(zip(arg_names, body_args)))
+                        res_val = res.get(timeout=10)
 
-                    return jsonify({
-                        'success': all(res_val is not x for x in [None, False]),
-                        'result': res_val
-                    }), 200
+                        return jsonify({
+                            'success': all(res_val is not x for x in [None, False]),
+                            'result': res_val
+                        }), 200
+                    else:
+                        logger.error('Missing body arguments: %s', ', '.join(set(arg_names) - set(request.form)))
                 else:
-                    logger.error('Missing body arguments: %s', ', '.join(set(arg_names) - set(request.form)))
+                    # if not in the list, return an error
+                    logger.error('Service %s not implemented', service_type)
+                    return jsonify({'success': False, 'error': 'service_not_implemented'}), 400
             else:
-                # if not in the list, return an error
-                logger.error('Service %s not implemented', service_type)
-                return jsonify({'success': False, 'error': 'service_not_implemented'}), 400
+                logger.error('Service ID not found in database')
         else:
-            logger.error('Service ID not found in database')
-    else:
-        logger.error('Service ID not provided')
+            logger.error('Service ID not provided')
 
-    return jsonify({'success': False}), 400
+        return_code = 400
+
+    return jsonify({'success': False}), return_code

@@ -42,7 +42,7 @@ def remove_team():
     # only an admin can remove teams
     if session.get('_admin', False):
         # if the team ID was provided
-        team_id = request.form.get('id')
+        team_id = request.form.get('team_id')
         if team_id is not None:
             try:
                 team = Team.query.filter(Team.id == team_id).first()
@@ -82,6 +82,8 @@ def update_team():
         # check that the team exists
         team = Team.query.filter(Team.id == team_id).first()
         if team is not None:
+            success = True
+
             # update the username if provided
             if username is not None:
                 team.username = username
@@ -96,11 +98,11 @@ def update_team():
                     session.pop('_team', None)
                 else:
                     logger.error('Old password did not match and caller is not an admin!')
-                    db.session.rollback()
-                    return jsonify({'success': False}), 400
+                    success = False
 
-            db.session.commit()
-            return jsonify({'success': True}), 200
+            if success:
+                db.session.commit()
+                return jsonify({'success': True}), 200
 
     return jsonify({'success': False}), 400
 
