@@ -11,3 +11,4 @@ passlib
 paramiko
 requests
 git+https://github.com/gorakhargosh/watchdog.git
+flask-socketio
