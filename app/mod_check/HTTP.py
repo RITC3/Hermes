@@ -1,9 +1,11 @@
 from ..mod_check import app
 import requests
 import hashlib
-from logging import getLogger
+from celery.utils.log import get_task_logger
+from logging import DEBUG
 
-logger = logging.getLogger('mod_check.HTTP')
+logger = get_task_logger(__name__)
+logger.setLevel(DEBUG)
 
 @app.task
 def check(host, uri, stored_hash, port=None, use_ssl=False):
@@ -22,11 +24,11 @@ def check(host, uri, stored_hash, port=None, use_ssl=False):
         result (bool): Boolean value noting check success or failure:
 
     """
-    #Initialize result to None
+    # Initialize result to None
     result = None
 
     try:
-        #Assemble URL
+        # Assemble URL
         if use_ssl:
             url = "https://"
             if port is None:
@@ -38,14 +40,14 @@ def check(host, uri, stored_hash, port=None, use_ssl=False):
                 port = 80
                 logger.debug("Changing HTTP port to 80 since no port was supplied")
 
-        #Build URL and attempt to download page
+        # Build URL and attempt to download page
         url = url + host + ":" + str(port) + "/" + uri
         resp = requests.get(url)
 
-        #Calculate hash of current page with supplied hash in short form
+        # Calculate hash of current page with supplied hash in short form
         new_hash = hashlib.sha512(resp.content).hexdigest()
 
-        #Verify new hash matches stored hash
+        # Verify new hash matches stored hash
         if new_hash == stored_hash:
             result = True
         else:
