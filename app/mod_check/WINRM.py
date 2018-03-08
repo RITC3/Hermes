@@ -5,10 +5,6 @@ from ..mod_check import app
 logger = get_task_logger(__name__)
 logger.setLevel(DEBUG)
 
-# scoring share name and check file name
-scoring_share = 'scoring'
-scoring_check_path = '/scoring.txt'
-
 @app.task
 def check(host, port, username, password, cmd, domain=None, method=None):
     result = False
@@ -20,10 +16,12 @@ def check(host, port, username, password, cmd, domain=None, method=None):
         winrm_session = winrm.Session(host, auth=(auth_user, password))
         result = winrm_session.run_ps(cmd)
         if result.std_err:
-            print(result.std_err)
+            logger.error(result.std_err)
         else:
             result = result.std_out
     except Exception as e:
+        # I am not too sure about specific Exceptions here so I just catch
+        # them for now and they can be written in while they pop up
         logger.exception(e)
         result = False
 
