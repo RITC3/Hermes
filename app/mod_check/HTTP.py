@@ -3,10 +3,11 @@ import requests
 import hashlib
 from logging import getLogger
 
-logger = logging.getLogger('mod_check.HTTP')
+logger = getLogger('mod_check.HTTP')
+
 
 @app.task
-def check(host, uri, stored_hash, port=None, use_ssl=False):
+def check(host, stored_hash, uri, port=None, use_ssl=False):
     """Perform HTTP/HTTPS check against a target
 
     Perform HTTP check by default. Match SHA-512 hash of the body of the page with a stored hash. If the hashes match, the check succeeds.
@@ -38,22 +39,19 @@ def check(host, uri, stored_hash, port=None, use_ssl=False):
                 port = 80
                 logger.debug("Changing HTTP port to 80 since no port was supplied")
 
-        #Build URL and attempt to download page
-        url = url + host + ":" + str(port) + "/" + uri
-        resp = requests.get(url)
-
-        #Calculate hash of current page with supplied hash in short form
+        # Build URL and attempt to download page
+        url = url + host + ":" + str(port) + uri
+        resp = requests.get(url,  verify=False)
+        # Calculate hash of current page with supplied hash in short form
         new_hash = hashlib.sha512(resp.content).hexdigest()
+        # Verify new hash matches stored hash
 
-        #Verify new hash matches stored hash
         if new_hash == stored_hash:
             result = True
         else:
-            print("false")
             result = False
 
     except Exception as e:
         logger.exception(e)
         result = False
-
     return result
