@@ -56,3 +56,13 @@ Generally, to run Hermes:
 2. `cd path/to/Hermes`
 3. `celery multi start 5 --app=app.mod_check` or `bash autoreload-worker.sh`
 4. `python3 run.py`
+
+
+## Adding a Service
+
+1. Download and add library to requirements.txt 
+2. mod_check/_init_.py: add "add.mod_check.LDAP"
+3. Add LDAP.py file to mod_check
+4. Add service import to mod_service/controllers.py
+5. Add check function "ldap_check" to mod_service/controllers.py
+6. Add service to service_list in mod_service/controllers.pys
