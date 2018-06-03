@@ -148,20 +148,12 @@ def smtp_check(service, username, password, domain, use_ssl):
                             use_ssl=(use_ssl.lower() == 'true'))
 
 
-def smb_check(service, username, password, remote_name):
-    return SMB.check.delay(host=service.host,
-                           port=service.port,
-                           username=username,
-                           password=password,
-                           remote_name=remote_name)
-
-
 def http_check(service, uri, stored_hash, use_ssl):
     return HTTP.check.delay(host=service.host,
                             uri=uri,
                             stored_hash=stored_hash,
                             port=service.port,
-                            use_ssl=(not(use_ssl.lower() == 'false')));
+                            use_ssl=(not(use_ssl.lower() == 'false')))
 
 
 service_list = {
@@ -182,7 +174,7 @@ def check_service():
     # only admins can manually check a service by ID
     if session.get('_admin', False):
         # get service ID if provided
-        service_id = request.form.get('service_id')
+        service_id = request.form.get('id')
         if service_id is not None:
             # get the service from the DB
             service = Service.query.filter(Service.id == service_id).first()
@@ -193,18 +185,17 @@ def check_service():
                 if service_type in service_list:
                     # get the check handling method and the name of the form args to check for
                     check_method, arg_names = service_list[service_type]
-
                     # get form args and check that they all have been set
                     body_args = [request.form.get(k) for k in arg_names]
                     if all(body_args):
                         # if so, call the check method with the service object and kwargs made from the parameters
                         res = check_method(service, **dict(zip(arg_names, body_args)))
                         res_val = res.get(timeout=10)
-
                         return jsonify({
                             'success': all(res_val is not x for x in [None, False]),
                             'result': res_val
                         }), 200
+
                     else:
                         logger.error('Missing body arguments: %s', ', '.join(set(arg_names) - set(request.form)))
                 else:
