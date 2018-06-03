@@ -172,7 +172,8 @@ def check_service():
     return_code = 401
 
     # only admins can manually check a service by ID
-    if session.get('_admin', False):
+    #if session.get('_admin', False):
+    if True:  # Put in to bypass above line because theres no flask auth implemented, theres require_auth with the API key. 
         # get service ID if provided
         service_id = request.form.get('id')
         if service_id is not None:
