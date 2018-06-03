@@ -10,4 +10,5 @@ flask_api
 passlib
 paramiko
 requests
+python-ldap
 git+https://github.com/gorakhargosh/watchdog.git
