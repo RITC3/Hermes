@@ -5,7 +5,7 @@ from ..mod_auth import require_auth
 from ..mod_db import db
 from .models import Service
 
-from ..mod_check import MySQL, FTP, SSH, IMAP, SMTP, HTTP
+from ..mod_check import MySQL, FTP, SSH, IMAP, SMTP, HTTP, DNS
 
 
 mod_service = Blueprint('service', __name__, url_prefix='/api/data/service')
@@ -155,6 +155,12 @@ def http_check(service, uri, stored_hash, use_ssl):
                             port=service.port,
                             use_ssl=(not(use_ssl.lower() == 'false')))
 
+def dns_check(service, record_type, query, dns_response):
+    return DNS.check.delay(host=service.host,
+                           record_type=record_type,
+                           query=query,
+                           dns_response=dns_response,
+                           port=service.port)
 
 service_list = {
     'MySQL': (mysql_check, ('username', 'password', 'db_name')),
@@ -162,7 +168,8 @@ service_list = {
     'SSH': (ssh_check, ('username', 'password')),
     'IMAP': (imap_check, ('username', 'password', 'use_ssl')),
     'SMTP': (smtp_check, ('username', 'password', 'domain', 'use_ssl')),
-    'HTTP': (http_check, ('uri', 'stored_hash', 'use_ssl'))
+    'HTTP': (http_check, ('uri', 'stored_hash', 'use_ssl')),
+    'DNS': (dns_check, ('record_type', 'query', 'dns_response'))
 }
 
 
