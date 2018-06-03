@@ -1,10 +1,12 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from sqlalchemy.exc import SQLAlchemyError
 from logging import getLogger
 from ..mod_auth import require_auth
 from ..mod_db import db
 from .models import Service
-from ..mod_check import MySQL, FTP, SSH, IMAP, SMTP
+
+from ..mod_check import MySQL, FTP, SSH, IMAP, SMTP, HTTP
+
 
 mod_service = Blueprint('service', __name__, url_prefix='/api/data/service')
 logger = getLogger('mod_check')
@@ -146,52 +148,66 @@ def smtp_check(service, username, password, domain, use_ssl):
                             use_ssl=(use_ssl.lower() == 'true'))
 
 
+def http_check(service, uri, stored_hash, use_ssl):
+    return HTTP.check.delay(host=service.host,
+                            uri=uri,
+                            stored_hash=stored_hash,
+                            port=service.port,
+                            use_ssl=(not(use_ssl.lower() == 'false')))
+
+
 service_list = {
     'MySQL': (mysql_check, ('username', 'password', 'db_name')),
     'FTP': (ftp_check, ('username', 'password')),
     'SSH': (ssh_check, ('username', 'password')),
     'IMAP': (imap_check, ('username', 'password', 'use_ssl')),
-    'SMTP': (smtp_check, ('username', 'password', 'domain', 'use_ssl'))
+    'SMTP': (smtp_check, ('username', 'password', 'domain', 'use_ssl')),
+    'HTTP': (http_check, ('uri', 'stored_hash', 'use_ssl'))
 }
 
 
 @mod_service.route('/check', methods=['POST'])
 @require_auth
 def check_service():
-    # get service ID if provided
-    service_id = request.form.get('id')
-    if service_id is not None:
+    return_code = 401
 
-        # get the service from the DB
-        service = Service.query.filter(Service.id == service_id).first()
-        if service is not None:
-            service_type = service.service_type
+    # only admins can manually check a service by ID
+    #if session.get('_admin', False):
+    if True:  # Put in to bypass above line because theres no flask auth implemented, theres require_auth with the API key. 
+        # get service ID if provided
+        service_id = request.form.get('id')
+        if service_id is not None:
+            # get the service from the DB
+            service = Service.query.filter(Service.id == service_id).first()
+            if service is not None:
+                service_type = service.service_type
 
-            # check if the service type is in the list
-            if service_type in service_list:
-                # get the check handling method and the name of the form args to check for
-                check_method, arg_names = service_list[service_type]
+                # check if the service type is in the list
+                if service_type in service_list:
+                    # get the check handling method and the name of the form args to check for
+                    check_method, arg_names = service_list[service_type]
+                    # get form args and check that they all have been set
+                    body_args = [request.form.get(k) for k in arg_names]
+                    if all(body_args):
+                        # if so, call the check method with the service object and kwargs made from the parameters
+                        res = check_method(service, **dict(zip(arg_names, body_args)))
+                        res_val = res.get(timeout=10)
+                        return jsonify({
+                            'success': all(res_val is not x for x in [None, False]),
+                            'result': res_val
+                        }), 200
 
-                # get form args and check that they all have been set
-                body_args = [request.form.get(k) for k in arg_names]
-                if all(body_args):
-                    # if so, call the check method with the service object and kwargs made from the parameters
-                    res = check_method(service, **dict(zip(arg_names, body_args)))
-                    res_val = res.get(timeout=10)
-
-                    return jsonify({
-                        'success': all(res_val is not x for x in [None, False]),
-                        'result': res_val
-                    }), 200
+                    else:
+                        logger.error('Missing body arguments: %s', ', '.join(set(arg_names) - set(request.form)))
                 else:
-                    logger.error('Missing body arguments: %s', ', '.join(set(arg_names) - set(request.form)))
+                    # if not in the list, return an error
+                    logger.error('Service %s not implemented', service_type)
+                    return jsonify({'success': False, 'error': 'service_not_implemented'}), 400
             else:
-                # if not in the list, return an error
-                logger.error('Service %s not implemented', service_type)
-                return jsonify({'success': False, 'error': 'service_not_implemented'}), 400
+                logger.error('Service ID not found in database')
         else:
-            logger.error('Service ID not found in database')
-    else:
-        logger.error('Service ID not provided')
+            logger.error('Service ID not provided')
 
-    return jsonify({'success': False}), 400
+        return_code = 400
+
+    return jsonify({'success': False}), return_code
