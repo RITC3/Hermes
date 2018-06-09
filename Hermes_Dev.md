@@ -39,9 +39,9 @@ This documentation will be updated to support Ubuntu 18.04
 Currently the way we are running the development environment is with a docker image of RabbitMQ with its default ports being passed to the same external ports of the dev machine.  This configuration is used so each developer doesn't have to modify the `Hermes/app/mod_check/__init__.py` file.
 
 ### Steps
-1) >```sudo docker pull rabbitmq```
-2) >```sudo docker run -d -p 4369:4369 -p 5671:5671 -p 5672:5672 -p 25672:25672 rabbitmq```
-3) >```./autoreload-worker.sh```
-4) >```./run.py```
+1) >`sudo docker pull rabbitmq`
+2) >`sudo docker run -d -p 4369:4369 -p 5671:5671 -p 5672:5672 -p 25672:25672 rabbitmq`
+3) >`./autoreload-worker.sh`
+4) >`./run.py`
 
 The Celery workers and Flask application should now be started and able to connect to the RabbitMQ instance.
