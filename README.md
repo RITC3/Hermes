@@ -6,6 +6,9 @@ Hermes tries to be hip and modern by using Python 3, RabbitMQ + Celery, and prob
 some other things I am forgetting about.
 
 
+## [Installing for Development](./Hermes_Dev.md)
+
+
 ## Setting up RabbitMQ
 Hermes uses RabbitMQ as a message broker for service checking. Celery workers from
 multiple locations can receive tasks from the queue which helps prevent bottlenecks.
