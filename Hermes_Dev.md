@@ -8,6 +8,11 @@ This documentation will be updated to support Ubuntu 18.04
 
 ## Install Pre-Requirements
 - Python 3.6 (Required)
+    - Ubuntu 18.04:
+        ```
+        sudo apt-get update
+        sudo apt-get install python3-pip
+        ```
     - Ubuntu 16.04:
         ```
         sudo add-apt-repository ppa:deadsnakes/ppa
@@ -15,7 +20,7 @@ This documentation will be updated to support Ubuntu 18.04
         sudo apt-get install python3.6 python3-pip
         ```
 - Virtual Environments (Optional, but highly recommended)
-    - Ubuntu:
+    - Ubuntu 18.04, 16.04:
         ```
         pip install virtualenv
         virtualenv --python=/usr/bin/python3.6 venv
@@ -23,12 +28,12 @@ This documentation will be updated to support Ubuntu 18.04
         ```
 
 - Install External Requirements
-    - Ubuntu:
+    - Ubuntu 18.04, 16.04:
         ```
         sudo apt-get install python3.6-dev libssl-dev
         ```
 - Install Python Requirements
-    - Ubuntu:
+    - Ubuntu 18.04, 16.04:
         ```
         pip install -r requirements.txt
         ```
