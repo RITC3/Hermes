@@ -4,6 +4,8 @@ venv
 .vimrc.local
 *.ropeproject
 *.swp
+.idea
+.vscode
 
 # Celery
 celery*.log
